@@ -1,10 +1,5 @@
-Introduction to Parallel Programming
-====================================
-
 Moore’s law and hardware constraints
 ------------------------------------
-
-💡
 
 Moores law states that the **number of transistors** that can be placed
 on an **integrated circuit** at a reasonable cost **doubles** ever **two
@@ -45,19 +40,14 @@ just on increasing clock-speed.
 
 The memory wall
 ---------------
-
-💡
-
 The memory wall describes the **implications** of the **processor/memory
 performance** gap that has grown steadily over the last several decades.
 
 ### Prerequisite - Von Neumann Architecture
-
 Architecture which describes the basic abstract structure of most modern
 computers.
 
 **Core aspects**
-
 Programming instructions and data are stored in the **same** memory unit
 and **share memory**.
 
@@ -72,43 +62,36 @@ These bottlenecks refer to a set of limitations arising from the
 specific structure of the Von Neumann architecture.
 
 **Memory bandwidth**
-
 The rate at which data can be moved to and from the CPU is not
 increasing as quickly as computing power of CPU. In other words, the CPU
 can **processes data faster** than it can be **supplied** from memory.
 
 **Memory latency**
-
 The time it takes the CPU to access data from memory has been decreasing
 **slowly**.
 
 **Increasing cores**
-
 The increasing number of cores per memory unit increasing exacerbates
 the memory bottle neck as we have more cores competing for memory
 access.
 
 ### Consequences - CPU Wait Cycles
-
 One major consequence is that the CPU having to wait for incoming data
 leads to wasted processing cycles where the CPU **could have been doing
 something**. Reducing overall efficiency.
 
 ### Solutions to the Memory Wall
-
 The main goal of solutions to the memory wall is to increase memory
 throughput and thus make better use of otherwise wasted CPU cycles where
 its done processing and just waiting for new data from memory.
 
 **Cache memory**
-
 This refers to small amounts of memory typically stored closer to the
 CPU containing frequent information. This reduces the amount of times
 the CPU needs to wait for data from the main memory thus leader to
 better efficiency.
 
 **Parallel Memory access**
-
 This refers to the processor making use of things like **vector
 architectures** or **advanced vector extensions** to allow for parallel
 memory access which in turn also increases throughput.
@@ -117,16 +100,13 @@ memory access which in turn also increases throughput.
 
 Amdahls Law
 -----------
-
-💡
-
 A law or expression which denotes the **theoretical maximum speedup**
 obtained by parallelizing some code for a given problem with a fixed
 size.
 
 ### Equation
 
-$$\text{Speedup}(N) = \frac{T_{S}}{T_{p}(N)} = \frac{T_{S}}{\alpha T_{S} + (1 - \alpha)\frac{T_{S}}{N}} = \frac{1}{\alpha + \frac{1 - \alpha}{N}}$$Speedup(N)=Tp​(N)TS​​=αTS​+(1−α)NTS​​TS​​=α+N1−α​1​
+$$\text{Speedup}(N) = \frac{T_{S}}{T_{p}(N)} = \frac{T_{S}}{\alpha T_{S} + (1 - \alpha)\frac{T_{S}}{N}} = \frac{1}{\alpha + \frac{1 - \alpha}{N}}$$
 
 **Variables**
 
@@ -157,7 +137,7 @@ $\frac{1 - \alpha}{N}$N1−α​ term approaches 0 due to the denominator
 
 $N$N becoming much larger than the numerator
 
-$1 - \alpha$1−α.
+$1 - \alpha$ 
 
 ### Application
 
@@ -488,20 +468,8 @@ There are various novel parallel programming languages being
 developed/worked on. There are also new runtime systems being developed
 to handle task-based parallelism such as Charm++ and HPX.
 
--   Co-array
-
- 
-
+-   Co-arrary
 -   Fortran
-
- 
-
 -   PGAS
-
- 
-
 -   X10
-
- 
-
 -   Chapel

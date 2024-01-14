@@ -1,9 +1,6 @@
 
 Hybrid Computing Model
 ----------------------
-
-💡
-
 The Hybrid computing model refers to the way computing is done in a
 contemporary sense where you generally have the CPU interface with the
 memory for computations.

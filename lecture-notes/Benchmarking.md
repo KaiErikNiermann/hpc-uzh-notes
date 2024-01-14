@@ -2,8 +2,6 @@
 Compiler suites
 ---------------
 
-💡
-
 Compiler suites are a **collection of tools**, most prominently for
 compiling your program, but also things more general development and
 testing, including benchmarking.
@@ -19,7 +17,6 @@ testing, including benchmarking.
 | Clang (Apple and Cray)          | Compiler meant for C, C++, Objective-C, and Objective-C++                                                                  |
 
 ### Compiler wrappers
-
 Compiler wrappers aim to **streamline compilation process** especially
 for High Performance Applications which would otherwise require a
 specific combination of flags and steps to get the desired executable.
@@ -28,7 +25,6 @@ These wrappers mainly add the necessary flags and automatically link the
 required libraries (`mpi.h` for example).
 
 ### Example - MPI Compilation
-
 In the case of MPI you use the `mpi.h` header file to be able to access
 the necessary functions. In the standard case you would need to tell the
 compiler where to find the library to which the header file is
@@ -39,7 +35,6 @@ gcc -o my_mpi_program my_mpi_program.c -I/path/to/mpi/include -L/path/to/mpi/lib
 ```
 
 **that’s annoying**
-
 So instead you have compiler wrappers, in this case we have `mpicc` for
 C code or `mpic++` for C++ code. This mainly just tells the compiler
 where everything is so you can simplify the compilation process down to
@@ -53,9 +48,6 @@ mpicc -o my_mpi_program my_mpi_program.c
 
 Application : N-Body physics
 ----------------------------
-
-💡
-
 N-Body simulation is a simulation of a dynamical system (a system that
 changes over time) of interactions between particles, usually under the
 influence of some force, in our case gravity.
@@ -92,7 +84,7 @@ $$\mathbf{F}_{21} = \frac{\mathbf{x}_{2} - \mathbf{x}_{1}}{\mid\mid\mathbf{x}_{2
 And since this only represents the gravitational force between object 1
 and 2 we have to take the sum of forces acting on the body, namely
 
-$$\mathbf{x}_{i}^{\prime\prime} = \sum\limits_{j = 1,i \neq j}^{n}\frac{\mathbf{x}_{j} - \mathbf{x}_{i}}{\mid\mid\mathbf{x}_{j} - \mathbf{x}_{i}\mid\mid^{3}}$$xi′′​=j=1,i=j∑n​∣∣xj​−xi​∣∣3xj​−xi​​
+$$\mathbf{x}_{i}^{\prime\prime} = \sum\limits_{j = 1,i \neq j}^{n}\frac{\mathbf{x}_{j} - \mathbf{x}_{i}}{\mid\mid\mathbf{x}_{j} - \mathbf{x}_{i}\mid\mid^{3}}$$
 
 Now we have an equation to model the change in the particles velocity
 over time, from this we can start building our little simulation.
@@ -101,7 +93,7 @@ over time, from this we can start building our little simulation.
 
 **Initial requirements**
 
-``` code
+```cpp
 #include <stdio.h>
 #include <vector>
 #include <random>

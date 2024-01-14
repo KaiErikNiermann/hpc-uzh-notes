@@ -4,8 +4,6 @@
 Modules
 -------
 
-💡
-
 Environment modules are encapsulated **settings** and **software**
 needed for a certain application.
 
@@ -378,15 +376,9 @@ A compiler is a piece of software which converts a piece of source code
 ![](Compilers%20and%20Batch%20Queues%20e98f74423bfe46a38d4340195a1b6872/Untitled%204.png)
 
 1.  The *source code* is compiled into *object code (machine language)*
-
- 
-
-1.  A *Linker* is used to “link” additional libraries which contain
+2.  A *Linker* is used to “link” additional libraries which contain
     object code with your existing program.
-
- 
-
-1.  The result of this process becomes a runtime version of your program
+3.  The result of this process becomes a runtime version of your program
     which contains *executable code.*
 
 ### Compiler optimizations
@@ -651,9 +643,6 @@ This finalizes the program.
 
 Applying OpenMP in CPI
 ----------------------
-
-💡
-
 We can apply OpenMP for a similar effect as in MPI to parallelize the
 workload. The equivalent C program is broken down as follows.
 
