@@ -31,21 +31,14 @@ Batch Queue System
 ------------------
 
 ### Important data-structures
-
 **Queue** - First In, First Out
-
 **Stack** - Last In, First Out
-
-**Priority Queue** - Queue in which elements are ordered by priority (
-e.g. size )
+**Priority Queue** - Queue in which elements are ordered by priority ( e.g. size )
 
 ### Supercomputer terminology
-
 **Node** - Individual computer that consists of one or more CPUs
 together with memory
-
 **Core** - Individual part of CPU, can have multiple threads
-
 **CPU** - Compute unit, usually has several cores
 
 ### Job Script
@@ -53,16 +46,12 @@ together with memory
 Two main parts
 
 1.  Job metadata
-
     ``` code
     #SBATCH --account=uzh8        // Relevant slurm account that is running the job
     #SBATCH --job-name=hpc_test   // Name for the job that you can see when you run it 
     ```
-
- 
-
-1.  Job parameters
-
+    
+2.  Job parameters
     ``` code
     #SBATCH --time=01:00:00       // Max alloted time to run the program
     #SBATCH --nodes=1             // Number of nodes to run process
@@ -79,62 +68,33 @@ Two main parts
 ### Slurm commands
 
 `sbatch` - Submit a job
-
 `squeue` - See all currently running jobs
-
 -   `-t` pending jobs
-
- 
-
 -   `-r` running jobs
-
- 
-
 -   `-u` your jobs
-
 `sinfo` - See partition information
-
 -   `-p` normal partition
-
- 
-
 -   `-d` debug partition
-
 `srun` - Run a job
-
 `scancel` - Cancel a job
-
 `accounting` - view usage
 
 ------------------------------------------------------------------------
 
 MPI and OpenMP
 --------------
-
-💡
-
 **M**essage **P**assing **I**nterface is a standard designed for
 parallel computing of multiple systems with distributed memory where
-processes pass messages between one another.  
-  
-Open  
-**M**essage **P**assing is designed for shared memory (single) systems
-with multiple cores based on the idea of thread/core sharing
+processes pass messages between one another.  **O**pen  **M**essage **P**assing is designed for shared memory (single) systems with multiple cores based on the idea of thread/core sharing
 
 ### Key differences
-
 **MPI**
-
 MPI works primarily in terms of processes, which run on *different*
 memory spaces
 
 **OpenMP**
-
 OpenMP works primarily with threads, which run on *shared* memory spaces
-
 ### The basic MPI program
-
-![](Compilers%20and%20Batch%20Queues%20e98f74423bfe46a38d4340195a1b6872/Untitled.png)
 
 ``` code
 #include <mpi.h> 
@@ -157,27 +117,17 @@ Example of basic MPI program structure in C
 `MPI_Init(&argc, &argv)`
 
 -   **Initializes** MPI environment
-
- 
-
 -   Must **always** be called and be **first**
-
- 
-
 -   Can be used to **pass command line arguments**
 
 `MPI_Finalize()`
 
 -   **Terminates** MPI environment
-
- 
-
 -   **Last** MPI function call
 
 **Communicators**
 
 Type of MPI object which define the processes that can talk.
-
 All communicators have a size property.
 
 **Rank**
@@ -186,34 +136,26 @@ Defines the process and has the bounds 0≤ Rank < Size , in other
 words, its the ID of the process
 
 `MPI_COMM_WORLD`
-
 -   Communicator object predefined as **all** of the MPI processes
-
 `MPI_Comm_rank(comm, &rank)`
-
 -   Communicator function that returns the rank of the calling process
     as the `rank` variable within the communicator `comm`
-
 `MPI_Comm_size(comm, &size)`
-
 -   Returns the total number of processes within the communicator `comm`
     as the variable `size`
 
 **Example application**
-
 ``` code
 int my_rank, size; 
 MPI_Init(&argc, &argv);
 MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
 MPI_Comm_size(MPI_COMM_WORLD, &size);
 ```
-
 Programm that reads the rank and size of the world comm. object.  
 Size would in this case return the number of processes and  
 `my_rank` the process id.
 
 ### MPI Hello World example
-
 ``` code
 #include <mpi.h>
 #include <stdio.h>
@@ -240,40 +182,26 @@ int main(int argc, char *argv[]) {
 ![](Compilers%20and%20Batch%20Queues%20e98f74423bfe46a38d4340195a1b6872/Untitled%201.png)
 
 ***Observations***
-
 -   The code ran on each process independently
-
- 
-
 -   MPI processes have **private variables**
-
- 
-
 -   Processes *can* be on **different machines**
 
 ------------------------------------------------------------------------
 
 Example MPI and OpenMP program
 ------------------------------
-
-💡
-
 We can demonstrate the basic concept of **speedup** using an example
 program that uses numerical integrated to approximate pi.
 
 ### MPI Version
-
-[MPI
-Version](Compilers%20and%20Batch%20Queues%20e98f74423bfe46a38d4340195a1b6872/MPI%20Version%203b2263f9f1c6479c8dd317dbf19cbe94.md)
+[MPI Version](Compilers%20and%20Batch%20Queues%20e98f74423bfe46a38d4340195a1b6872/MPI%20Version%203b2263f9f1c6479c8dd317dbf19cbe94.md)
 
 ``` code
 cc -O3 -o cpi_mpi cpi_mpi.c
 ```
 
 ### OpenMP Version
-
-[OpenMP
-Version](Compilers%20and%20Batch%20Queues%20e98f74423bfe46a38d4340195a1b6872/OpenMP%20Version%20d4a53f1180e84e3ab67244cbac3c86fe.md)
+[OpenMP Version](Compilers%20and%20Batch%20Queues%20e98f74423bfe46a38d4340195a1b6872/OpenMP%20Version%20d4a53f1180e84e3ab67244cbac3c86fe.md)
 
 ``` code
 cc -O0 -o cpi_omp -fopenmp cpi_omp.c
@@ -365,9 +293,6 @@ w lp lc 1 lw 2 t 'OpenMP'
 
 Compiler basics
 ---------------
-
-💡
-
 A compiler is a piece of software which converts a piece of source code
 (e.g. a C file) into object code.
 
@@ -382,7 +307,6 @@ A compiler is a piece of software which converts a piece of source code
     which contains *executable code.*
 
 ### Compiler optimizations
-
 The compiler can employ various means of optimizing your code, it does
 this automatically but you can also specify the extent to which your
 code will be optimized using flags.
@@ -426,12 +350,10 @@ the performance by reordering expressions this process in turn can also
 lead to a different result on occasions.
 
 ### Compiling multiple files
-
 If we have 3 files in the same folder: `cpi.c` , `gettime.c` and the
 header file `gettime.h`
 
 `cpi.c`
-
 ``` code
 #include <stdio.h>
 #include "gettime.h"
@@ -440,13 +362,11 @@ header file `gettime.h`
 ```
 
 `gettime.h`
-
 ``` code
 double getTime(void);
 ```
 
 `gettime.c`
-
 ``` code
 #include <stdio.h>
 #include <sys/time.h>
@@ -498,7 +418,6 @@ clean:
 ```
 
 **Improvement 1 - Default rules**
-
 We can use default rules which Make employs to reduce the amount of
 repeated code
 
@@ -516,17 +435,10 @@ clean:
 *Commands executed*
 
 `cc -c -o cpi.o cpi.c`
-
-  
-  
 `cc -c -o gettime.o gettime.c`
-
-  
-  
 `cc cpi.o gettime.o -o cpi`
 
 **Improvement 2 - Customizing default rules**
-
 We can specify custom properties of the default rules to bring back user
 defined flags for things like optimization
 

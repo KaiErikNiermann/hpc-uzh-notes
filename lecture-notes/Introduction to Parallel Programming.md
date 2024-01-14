@@ -228,8 +228,6 @@ $A$A twice.
 Gustafson Law
 -------------
 
-💡
-
 The **theoretical maximum speedup** obtained by parallelizing some code
 for a problem of a constant **size per core**.
 
@@ -264,8 +262,6 @@ $N$N as opposed to being a converging value.
 
 Hardware Evolution
 ------------------
-
-💡
 
 There are certain key trends in hardware evolution that have occurred
 over the past few decades.

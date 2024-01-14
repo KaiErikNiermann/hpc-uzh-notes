@@ -4,35 +4,27 @@
 CUDA Introduction
 -----------------
 
-💡
-
 Compute Unified Device Architecture or CUDA for short is a closed-source
 parallel computing platform and application programming interface that
 enables computing using GPUs.
 
 ### CUDA Architecture
-
 The CUDA architecture exposes the GPU parallelism for general purpose
 computing while retaining performance.
 
 ### CUDA C/C++
-
 CUDA Provides a C/C++ language extension ending in `.cu` that enables
 the easy offloading of a traditional C/C++ code to the GPU for
 computation with some minor alterations to the code.
 
 ### CUDA Terminology
-
 **Host**
-
 The host refers to the CPU and main memory.
 
 **Device**
-
 The device is the GPU along with its memory.
 
 ### CUDA Processing flow
-
 The method of how data is processed using the GPU can be explained by
 the following steps
 
@@ -41,9 +33,7 @@ the following steps
     Specifically the data is copied from the CPU memory to the GPU’s
     DRAM using the PCI Bus interface between the host and the device.
 
- 
-
-1.  Load the GPU program and execute it, caching data on chip for
+2.  Load the GPU program and execute it, caching data on chip for
     performance.
 
     Here we are loading the data and then using the GPU’s SMs to process
@@ -52,21 +42,17 @@ the following steps
     cache to increase performance, as it would be alot more costly to
     try and fetch the data from the main memory.
 
- 
-
-1.  Copy the result back to the CPU memory
+3.  Copy the result back to the CPU memory
 
     Here we copy the now processed data back from the GPU’s DRAM to the
     CPU Memory.
 
 ### CUDA Hello World
-
 As stated before CUDA C/C++ enables GPU programming with just some minor
 changes to the code, to demonstrate this we can compare traditional C
 code with some CUDA C code.
 
 `hello_world.cu`
-
 ``` code
 #include <stdio.h>
 
@@ -77,7 +63,6 @@ int main(void) {
 ```
 
 **compile**
-
 ``` code
 nvcc hello_world.cu ; ./a.out
 ```
@@ -88,7 +73,6 @@ Since CUDA C/C++ is just an extension of traditional C you can write and
 compile regular C with the `nvcc` compiler.
 
 `hello_world.cu`
-
 ``` code
 #include <stdio.h>
 
@@ -136,15 +120,11 @@ the host.
 
 Basics of CUDA programming
 --------------------------
-
-💡
-
 We can start by going through a few basic examples, at the heart of it
 GPU programming is above massive parallelism of specific tasks, a common
 basic example of this is vector addition.
 
 ### Memory Management
-
 A key thing to note when it comes to memory management in computations
 that use both the CPU and GPU is that either compute uni has its own
 memory, which by extension means that pointers point to *their own
@@ -152,7 +132,6 @@ memory*, which in turn means you must manage the memory separately on
 either unit.
 
 **Device memory**
-
 May not be passed between host functions ( since its in the device
 memory not host )
 
@@ -160,34 +139,22 @@ May not be dereferences in host functions ( again same pretty clear
 reasoning )
 
 **Host memory**
-
 May be passed to/from device code
 
 May not be dereferenced in the device code.
 
 ### Example - Scalar addition on the GPU
-
 There are a few important things that need to be considered on a
 fundamental level when you are working with GPUs. Specifically about how
 we manage the memory.
 
 -   We need to somehow allocate the memory on the GPU
-
- 
-
 -   We need to copy over the data to the GPU so it can work with it
-
- 
-
 -   We need to copy back and free the data on the GPU so we write safe
     code
-
- 
-
 -   We need to also manage the memory on the host
 
 **Addition function**
-
 Starting with the core of things with have the GPU addition function
 
 ``` code
@@ -202,7 +169,6 @@ the variables for the addition process using the `*` . That is, we
 accessing and modifying the value at the allocated GPU memory location.
 
 **Main function**
-
 We start off by doing some initializing, we want to add 3 numbers, so we
 need space for this on the host and the device. We also want to have a
 variable that expresses the size of the units we are working with. In
@@ -223,7 +189,6 @@ allocate the necessary memory at the locations specified by the device
 variables.
 
 `cudaMalloc`
-
 ``` code
 cudaMalloc((void**)&d_a, size);
 cudaMalloc((void**)&d_b, size);
@@ -243,7 +208,6 @@ You then want to setup the input values and copy the inputs tot he
 device using the `cudaMemcpy` function.
 
 `cudaMemcpy`
-
 ``` code
 a = 2
 b = 7
@@ -267,7 +231,6 @@ variable `c` from the GPU this time using the `cudaMemcpyDeviceToHost`
 direction specifier.
 
 `cudaMemcpy`
-
 ``` code
 cudaMemcpy(&c, d_c, sizeof(int), cudaMemcpyDeviceToHost);
 ```
@@ -277,7 +240,6 @@ now do whatever we want with the result as its back to being stored on
 the host memory.
 
 `cudaFree`
-
 ``` code
 // Free device memory
 cudaFree(d_a);
@@ -289,7 +251,6 @@ printf("Result: %d\n", c);
 ```
 
 **full code**
-
 The full code would then look something like this
 
 [`add.cu`](http://add.cu)

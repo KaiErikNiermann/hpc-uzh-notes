@@ -1,22 +1,158 @@
 # Compilers and Queues 
 ## version control 
-[[git-cheatsheet.pdf]]
+- [[git-cheatsheet.pdf]]
+- [[Compilers and Batch Queues]]
+- [[hpc lecture 2 - Compilers and Batch Queues.pdf]]
 
 ## phases of compiler 
-[[Compilers and Batch Queues]]
-### Lexical Analysis
+- [[Compilers and Batch Queues]]
+- [[hpc lecture 2 - Compilers and Batch Queues.pdf]]
+#### Lexical Analysis
 The first phase of scanner works as a text scanner. This phase scans the source code as a stream of characters and converts it into meaningful lexemes. Lexical analyzer represents these lexemes in the form of tokens as:
 
 `<token-name, attribute-value>`
-### Syntax Analysis
+### compilation phases
+#### Syntax Analysis
 The next phase is called the syntax analysis or **parsing**. It takes the token produced by lexical analysis as input and generates a parse tree (or syntax tree). In this phase, token arrangements are checked against the source code grammar, i.e. the parser checks if the expression made by the tokens is syntactically correct.
-### Semantic Analysis
+#### Semantic Analysis
 Semantic analysis checks whether the parse tree constructed follows the rules of language. For example, assignment of values is between compatible data types, and adding string to an integer. Also, the semantic analyzer keeps track of identifiers, their types and expressions; whether identifiers are declared before use or not etc. The semantic analyzer produces an annotated syntax tree as an output.
-### Intermediate Code Generation
+#### Intermediate Code Generation
 After semantic analysis the compiler generates an intermediate code of the source code for the target machine. It represents a program for some abstract machine. It is in between the high-level language and the machine language. This intermediate code should be generated in such a way that it makes it easier to be translated into the target machine code.
-### Code Optimization
+#### Code Optimization
 The next phase does code optimization of the intermediate code. Optimization can be assumed as something that removes unnecessary code lines, and arranges the sequence of statements in order to speed up the program execution without wasting resources (CPU, memory).
-### Code Generation
+#### Code Generation
 In this phase, the code generator takes the optimized representation of the intermediate code and maps it to the target machine language. The code generator translates the intermediate code into a sequence of (generally) re-locatable machine code. Sequence of instructions of machine code performs the task as the intermediate code would do.
-### Symbol Table
+#### Symbol Table
 It is a data-structure maintained throughout all the phases of a compiler. All the identifier's names along with their types are stored here. The symbol table makes it easier for the compiler to quickly search the identifier record and retrieve it. The symbol table is also used for scope management.
+### Linking 
+The linker is what produces the final compilation output from the object files the compiler produced. This output can be either a shared (or dynamic) library (and while the name is similar, they haven't got much in common with static libraries mentioned earlier) or an executable.
+
+It links all the object files by replacing the references to undefined symbols with the correct addresses. Each of these symbols can be defined in other object files or in libraries. If they are defined in libraries other than the standard library, you need to tell the linker about them.
+
+At this stage the most common errors are missing definitions or duplicate definitions. The former means that either the definitions don't exist (i.e. they are not written), or that the object files or libraries where they reside were not given to the linker. The latter is obvious: the same symbol was defined in two different object files or libraries.
+
+## Importance of Optimization 
+- [[Compilers and Batch Queues]]
+- [[hpc lecture 2 - Compilers and Batch Queues.pdf]]
+### summary
+Compiler optimization is generally implemented using a sequence of _optimizing transformations_, algorithms which take a program and transform it to produce a semantically equivalent output program that uses fewer resources or executes faster. It has been shown that some code optimization problems are NP-complete, or even undecidable. In practice, factors such as the programmer's willingness to wait for the compiler to complete its task place upper limits on the optimizations that a compiler might provide. Optimization is generally a very CPU- and memory-intensive process. In the past, computer memory limitations were also a major factor in limiting which optimizations could be performed.
+
+## Basics of Make 
+### summary 
+In software development, Make is a build automation tool that builds executable programs and libraries from source code by reading files called makefiles which specify how to derive the target program. Though integrated development environments and language-specific compiler features can also be used to manage a build process, Make remains widely used, especially in Unix and Unix-like operating systems.
+### basic example application 
+**Overview:**
+Makefiles are used to organize code compilation efficiently. They automate the build process, ensuring that only the necessary parts of the code are recompiled when changes are made.
+
+**Example Files:**
+- `hellomake.c`: Main program.
+- `hellofunc.c`: Functional code.
+- `hellomake.h`: Include file.
+
+**Manual Compilation:**
+Compile using the command:
+```bash
+gcc -o hellomake hellomake.c hellofunc.c -I.
+```
+- `-I.` specifies the current directory for include files.
+
+**Simple Makefile (Makefile 1):**
+```make
+hellomake: hellomake.c hellofunc.c
+    gcc -o hellomake hellomake.c hellofunc.c -I.
+```
+- Run with `make`.
+- Efficient for avoiding retyping compile commands.
+
+**Improved Makefile (Makefile 2):**
+```make
+CC=gcc
+CFLAGS=-I.
+
+hellomake: hellomake.o hellofunc.o
+    $(CC) -o hellomake hellomake.o hellofunc.o
+```
+- Use constants for compiler and flags.
+- Compiles individual files before linking.
+
+**Dependency on Include Files (Makefile 3):**
+```make
+CC=gcc
+CFLAGS=-I.
+DEPS = hellomake.h
+
+%.o: %.c $(DEPS)
+    $(CC) -c -o $@ $< $(CFLAGS)
+
+hellomake: hellomake.o hellofunc.o
+    $(CC) -o hellomake hellomake.o hellofunc.o
+```
+- Introduces dependency on include files.
+- Re-compiles when header files change.
+
+**General Compilation Rule (Makefile 4):**
+```make
+CC=gcc
+CFLAGS=-I.
+DEPS = hellomake.h
+OBJ = hellomake.o hellofunc.o
+
+%.o: %.c $(DEPS)
+    $(CC) -c -o $@ $< $(CFLAGS)
+
+hellomake: $(OBJ)
+    $(CC) -o $@ $^ $(CFLAGS)
+```
+- Uses special macros `$@` and `$^` for general compilation rule.
+
+**Organized Project Structure (Makefile 5):**
+```make
+IDIR =../include
+CC=gcc
+CFLAGS=-I$(IDIR)
+
+ODIR=obj
+LDIR =../lib
+
+LIBS=-lm
+
+_DEPS = hellomake.h
+DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+
+_OBJ = hellomake.o hellofunc.o 
+OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
+
+$(ODIR)/%.o: %.c $(DEPS)
+    $(CC) -c -o $@ $< $(CFLAGS)
+
+hellomake: $(OBJ)
+    $(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+.PHONY: clean
+
+clean:
+    rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~
+```
+- Defines paths for include, object, and library directories.
+- Cleans up source and object directories with `make clean`.
+
+**Conclusion:**
+The provided Makefile can be modified for small to medium-sized software projects, offering efficiency and automation in the compilation process. Additional rules can be added, and the Makefile structure can be adapted as needed. For more details, refer to the GNU Make Manual.
+### Batch queue systems 
+- [[Compilers and Batch Queues]]
+
+# Performance 
+## Moore's Law and Top500 list
+- [[Introduction to Parallel Programming]]
+- [[hpc lecture 5 - Introduction to Parallel Programming.pdf]]
+## strong vs weak scaling 
+- [[Introduction to Parallel Programming]]
+- [[hpc lecture 5 - Introduction to Parallel Programming.pdf]]
+### Strong scaling 
+Concerns the speedup for a fixed problem size with respect to the number of processors, and is governed by Amdahl’s law.
+![[Pasted image 20240114040408.png]]
+![[Pasted image 20240114040416.png]]
+### Weak scaling 
+Concerns the speedup for a scaled problem size with respect to the number of processors, and is governed by Gustafson’s law.
+![[Pasted image 20240114040436.png]]![[Pasted image 20240114040444.png]]
+
