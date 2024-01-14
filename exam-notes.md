@@ -141,6 +141,7 @@ The provided Makefile can be modified for small to medium-sized software project
 ### Batch queue systems 
 - [[Compilers and Batch Queues]]
 
+---
 # Performance 
 ## Moore's Law and Top500 list
 - [[Introduction to Parallel Programming]]
@@ -156,3 +157,45 @@ Concerns the speedup for a fixed problem size with respect to the number of proc
 Concerns the speedup for a scaled problem size with respect to the number of processors, and is governed by Gustafson’s law.
 ![[Pasted image 20240114040436.png]]![[Pasted image 20240114040444.png]]
 
+
+## Latency and Bandwidth 
+- 
+### summary 
+- [[Introduction to Parallel Programming]]
+- [[hpc lecture 5 - Introduction to Parallel Programming.pdf]]
+Latency and throughput are two metrics that measure the performance of a computer network. Latency is the delay in network communication. It shows the time that data takes to transfer across the network. Networks with a longer delay or lag have high latency, while those with fast response times have lower latency. In contrast, throughput refers to the average volume of data that can actually pass through the network over a specific time. It indicates the number of data packets that arrive at their destinations successfully and the data packet loss.
+## Memory, cache and bus 
+- [[Introduction to Hybrid Computing]]
+- [[hpc lecture 11 - Hybrid Computing Introduction.pdf]]
+## Benchmarking 
+- [[Benchmarking]]
+- [[hpc lecture 8 - Benchmarking.pdf]]
+### different ways of benchmarking
+1. **Compilation and Basic Benchmarking:**
+    - Basic benchmarking is performed using Linux's built-in `time` utility.
+    - Compilation commands with optimization flags are used to observe changes in runtime.
+2. **Debugging and Minimizing File Size:**
+    - Debugging flags (`-g`) retain information for debugging.
+    - The `strip` utility removes unnecessary symbols from the compiled executable, reducing file size.
+3. **Benchmarking with Craypat:**
+    - Craypat is a performance analysis tool for HPC systems.
+    - It requires loading the `perftools-lite` module and using the Clang compiler after loading Craypat.
+    - A job script is used to submit the program for analysis, and `pat_report` provides detailed profiling information.
+4. **Sampling and App2:**
+    - Sampling is a method to analyze program performance by sampling the call stack at intervals.
+    - Craypat provides detailed profiling information, and `app2` interprets and visualizes the data.
+5. **Self Timing:**
+    - Basic timing concepts involve measuring the start and end time to calculate elapsed time.
+    - Functions like `time()`, `gettimeofday()`, and `clock_gettime()` are used to obtain time information.
+6. **High-Resolution C++ Clock:**
+    - `std::chrono` provides a high-resolution clock for precise timing.
+    - Example code demonstrates measuring elapsed time using the high-resolution clock.
+7. **Advanced - cycle.h:**
+    - The `cycle.h` header provides an advanced self-timing implementation based on the number of ticks.
+    - The `getticks()` function is used to obtain tick counts, and `elapsed()` calculates the difference.
+---
+# OpenMP 
+## Directive Based 
+- [[Introduction to OpenMP]]
+- [[hpc lecture 3 - MPI and OpenMP.pdf]]
+- [[hpc lecture 6 - OpenMP.pdf]]

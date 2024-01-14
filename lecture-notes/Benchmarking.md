@@ -8,13 +8,14 @@ testing, including benchmarking.
 
 ### Examples
 
-|                                 |                                                                                                                            |
-|---------------------------------|----------------------------------------------------------------------------------------------------------------------------|
-| Cray Compiler (`PrgEnv-cray`)   | High performance compiler suite mainly for C/C++/Fortran                                                                   |
-| GNU Compiler (`PrgEnv-gnu`)     | General purpose compiler that supports various languages/architectures and OS’s                                            |
+|  |  |
+| ---- | ---- |
+| Cray Compiler (`PrgEnv-cray`) | High performance compiler suite mainly for C/C++/Fortran |
+| GNU Compiler (`PrgEnv-gnu`) | General purpose compiler that supports various languages/architectures and OS’s |
 | Intel Compiler (`PrgEnv-intel`) | [Intel oneAPI DPC++/C++ compiler](https://en.wikipedia.org/wiki/Intel_C%2B%2B_Compiler) for Intel processor based systems. |
-| Portland (`PrgEnv-pgi`)         | High performance compiler suite made for C and C++ , now part of Nvidia HPC SDK stack                                      |
-| Clang (Apple and Cray)          | Compiler meant for C, C++, Objective-C, and Objective-C++                                                                  |
+| Portland (`PrgEnv-pgi`) | High performance compiler suite made for C and C++ , now part of Nvidia HPC SDK stack |
+| Clang (Apple and Cray) | Compiler meant for C, C++, Objective-C, and Objective-C++ |
+|  |  |
 
 ### Compiler wrappers
 Compiler wrappers aim to **streamline compilation process** especially
@@ -53,25 +54,23 @@ changes over time) of interactions between particles, usually under the
 influence of some force, in our case gravity.
 
 ### Relevance
-
 This serves as a nice demonstration for how we might use benchmarking
 techniques to improve the speed of our simulation.
 
 ### Some background
-
 Each particle obviously must have some position in 3D space (x, y, z),
 lets represent this as a vector
 
-$\mathbf{x}_{i}$xi​ for a particle
+$\mathbf{x}_{i}$​ for a particle
 
-$i$i.
+$i$
 
 We want an equation to represent the particles acceleration, this being
 the change in velocity over time. We can express this numerically as the
 sum of all gravitational forces acting on the particle. Since we are
 working with vector we take the vector form for newtons law of gravity.
 
-$$\mathbf{F}_{21} = - G\frac{m_{1}m_{2}}{\mid\mathbf{x}_{21}\mid^{2}}{\hat{\mathbf{x}}}_{21}$$F21​=−G∣x21​∣2m1​m2​​x^21​
+$$\mathbf{F}_{21} = - G\frac{m_{1}m_{2}}{\mid\mathbf{x}_{21}\mid^{2}}{\hat{\mathbf{x}}}_{21}$$
 
 We assume unit mass for particles (
 
@@ -79,7 +78,7 @@ $m_{i} = 1$mi​=1) furthermore we assume the gravitational force is
 constant, so it has no relative effects. Also since we are working in 3
 dimensions we cube the denominator.
 
-$$\mathbf{F}_{21} = \frac{\mathbf{x}_{2} - \mathbf{x}_{1}}{\mid\mid\mathbf{x}_{2} - \mathbf{x}_{1}\mid\mid^{3}}$$F21​=∣∣x2​−x1​∣∣3x2​−x1​​
+$$\mathbf{F}_{21} = \frac{\mathbf{x}_{2} - \mathbf{x}_{1}}{\mid\mid\mathbf{x}_{2} - \mathbf{x}_{1}\mid\mid^{3}}$$
 
 And since this only represents the gravitational force between object 1
 and 2 we have to take the sum of forces acting on the body, namely
@@ -138,7 +137,7 @@ positions.
 
 **The force calculations**
 
-``` code
+```cpp
 void forces(particle_list &plist) {
     for (auto &p1 : plist) {
         p1.ax = p1.ay = p1.az = 0.0;  // starting with 0 acceleration
@@ -170,7 +169,7 @@ lets just see what happens with linux’s builtin `time` utilitly.
 
 `Commands`
 
-``` code
+```
 g++ -o nbody nbody.cpp
 time ./nbody
 ```
@@ -279,7 +278,7 @@ time-limit.
 
 `nbodyscript`
 
-``` code
+```bash
 #!/bin/bash -l
 #SBATCH --account=my_account
 #SBATCH --job-name=nbody
@@ -396,9 +395,6 @@ app2 nbody+130946-8639969s
 
 Self timing
 -----------
-
-💡
-
 One of the most basic ways of timing specific segments of code. The idea
 being to measure the start and end time then look at the difference.
 
@@ -434,7 +430,7 @@ timing functions:
 
 `test.c`
 
-``` code
+```cpp
 #include <stdio.h>
 #include <time.h>
 #include <sys/time.h>
@@ -507,7 +503,7 @@ you want to be using a clock which can measure very small timesteps or
 
 **Basic example**
 
-``` code
+```cpp
 #include <chrono>
 #include <iostream>
 
@@ -539,9 +535,6 @@ dt = 0.0009293s
 
 Advanced - cycle.h
 ------------------
-
-💡
-
 There is an implementation of self timing that measures the exact
 difference in the number of ticks that passed. The header is defined
 here
@@ -556,8 +549,7 @@ You include the `cycle.h` header file and then use the `getticks()`
 function
 
 `test.c`
-
-``` code
+``` cpp
 #include <stdio.h>
 #include "./cycle.h"
 

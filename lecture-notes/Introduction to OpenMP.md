@@ -1,9 +1,6 @@
 
 Introduction and History
 ------------------------
-
-💡
-
 In the mid 90s many vendors where using their own methods of
 multithreading but they then adopted OpenMP.
 
@@ -20,9 +17,6 @@ multithreading but they then adopted OpenMP.
 
 General concepts of OpenMP
 --------------------------
-
-💡
-
 Before we get into using some OpenMP there are two key concepts,
 **multi-threading** and **parallel regions** that we should talk about.
 
@@ -32,14 +26,12 @@ OpenMP applies the concept of multithreading in a specific manner, for a
 given program using OpenMP we have that
 
 **creation of threads**
-
 Program is executed by **one process**, called the **master thread.**
 
 Master thread **activates light-weight processes,** called
 **workers/slave threads** at the entry of a **parallel region.**
 
 **variables and tasks**
-
 Each thread executes a **task**, corresponding to a **block of
 instructions.**
 
@@ -47,50 +39,39 @@ During the execution of a task, variables can be **read from** or
 **updated** in **memory.**
 
 **private variable**
-
 A variable which is defined in the **local memory** of a thread
 
 **shared variable**
-
 A variable which is defined in the main **shared memory (RAM)**
-
 ### Regions
 
 **parallel region**
-
 Region of program executed by **several threads** in parallel (i.e.
 master and slave threads).
 
 **sequential region**
-
 Region of program executed by only **master thread** 0.
 
 ------------------------------------------------------------------------
 
 Work sharing
 ------------
-
-💡
-
 OpenMP has 3 main ways of sharing/distributing work that it employs as a
 part of its programming model, this being: **dividing loop iterations,
 dividing code sections** and, **executing multiple instances of the same
 code**
 
 ### Dividing loop iterations
-
 As the name implies this involves dividing the loop iterations amongst
 some number of threads. Ensuring that each thread has an equal amount of
 work to do.
 
 ### Dividing sections of code
-
 Again as the name implies this is simply the process of divvying up
 sections of code amongst the threads, ensuring that each thread executes
 a different segment of code.
 
 ### Executing multiple instances of the same procedure, one per thread
-
 This means that each thread has its own copy of the procedure and will
 execute it independently of other threads.
 
@@ -98,33 +79,26 @@ execute it independently of other threads.
 
 Threads and Cores in OpenMP
 ---------------------------
-
-💡
-
 OpenMP has a specific way of dealing with threads. The OMP scheduler
 **maps threads onto cores** depending on a number of factors like their
 **load, the amount of work,** and **hints provided.**
 
 ### Best case mapping
-
 The OMP schedule distributes threads evenly among cores to in turn have
 an even distribution of the workload thus efficiently parallelizing the
 task.
 
 ### Worse case mapping
-
 The OMP scheduler maps all threads to a single core, this leads to a
 poor distribution of the workload and thus inefficient parallelism.
 
 ### Mapping in practice
 
 **Thread migration**
-
 Threads can be **migrated across cores** by OS . Which can result in a
 certain overhead.
 
 **Thread rank pinning**
-
 The runtime can also pin threads to cores according to their rank which
 can **improve performance** by reducing **overhead of thread
 migration**.
@@ -133,37 +107,24 @@ migration**.
 
 OpenMP program structure and compilation
 ----------------------------------------
-
-💡
-
 OpenMP programs generally follow a certain structure and also have to be
 compiled in a specific manner.
 
 ### Structure / Main attributes
 
 **Compilation directives and clauses**
-
 > ❗Seen as *comment lines* unless program is compiled properly
 
 Allow for things like the
-
 -   Creation of threads
-
- 
-
 -   Defining of work and data sharing strategies
-
- 
-
 -   Synchronizing shared variables
 
 **Functions and routines**
-
 OpenMP has certain library functions for various purposes that must be
 linked at link time using `-openmp` or `-fopenmp` in compile command.
 
 **Environment variables**
-
 OpenMP has several environment variables that can be set at execution
 time that change the parallel computing behavior of OMP. An example of
 this is setting the number of threads it uses
@@ -173,15 +134,13 @@ export OMP_NUM_THREADS=4
 ```
 
 ### Compilation
-
 As mentioned before a compiler sees directives and clauses as just
 comments unless we link to OpenMP when we compile, this can be done by
 either adding `-openmp` (icc compiler) or `-fopenmp` (GNU compilers e.g.
 gcc, g++) flag to our compilation command.
 
 `test.c`
-
-``` code
+``` cpp
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
@@ -203,7 +162,6 @@ gcc -fopenmp test.c -o test
 ```
 
 `output`
-
 ``` code
 Hello World!
 Hello World!
@@ -215,9 +173,6 @@ Hello World!
 
 OpenMP vs MPI
 -------------
-
-💡
-
 While both of these models enable parallel programming they each have
 some key differences.
 
@@ -226,46 +181,38 @@ some key differences.
 ### MPI
 
 **Multithreaded Model**
-
 Multithreaded model that operates with **single process** (master thread
 and worker threads). Where programmers can define **regions of code**
 that are **executed across multiple threads**
 
 **Multi-Process Model**
-
 Involves the execution of **multiple independently running processes**
 which can run on **separate nodes.**
 
 **Implicit communication**
-
 Designed for **shared memory architecture,** where multiple threads can
 access the **same memory space**. Programmer does **not** need to manage
 communication, hence its **implicit**.
 
 **Explicit communication**
-
 As processes are running independently and generally do not run on a
 shared memory space communication has to be **explicitly** defined by
 the programmer. Which makes MPI useful for distributed memory
 architectures like clusters with InfiniBand networks.
 
 **Usage**
-
 Used mainly in **shared-memory, multi-core** architectures. Well suited
 for tasks that can be parallelized within a **single node**.
 
 **Usage**
-
 MPI is commonly used in HPC environments where data needs to be
 exchanged **between nodes in a cluster**. Ideal for applications that
 have **high inter-process communications**.
 
 **Benefits**
-
 Easy to parallelize code via OMP directives.
 
 **Benefits**
-
 provide **fine-grained control over communication between processes**.
 Suitable for **complex** and **data-intensive** applications that rely
 on **message passing**.
@@ -274,47 +221,37 @@ on **message passing**.
 
 OpenMP Directives
 -----------------
-
-💡
-
 OpenMP directives are a key part of how OpenMP is used to implement
 parallelism within your program.
 
 ### Core concepts
 
 **Threads during runtime**
-
 On entry the master thread activates a team of **children threads**. On
 exit these threads disappear or hibernate.
 
 **How directives work ( fork-join model )**
-
 When the executing code hits a directive the operating system creates
 **parallel regions** and spawns **multiple threads**.
 
 **Spawning threads is expensive**
-
 Spawning threads comes with overhead, so their application needs to be
 carefully considered.
 
 ### Directive Syntax
-
 ``` code
 #pragma omp directive-name clause ... clause new-line
 ```
 
 `#pragma omp`
-
 Each directive starts with `#pragma omp`
 
 `directive-name`
-
 You then specify the specific name of the directive, in the case of
 wanting to parallelize a region of code you would just use the
 `parallel` directive.
 
 `clause, ..., clause`
-
 You then specify an arbitrary number for utilizing specific parts of
 OpenMP, like `for` to parallelize loops, or `default(none)` to tell the
 compiler to treat all variables in a parallel region as having undefined
@@ -326,9 +263,6 @@ Clauses can also obviously be chained together.
 
 Parallel Region - OpenMP application
 ------------------------------------
-
-💡
-
 **Reminder** - Creating a parallel region means telling OpenMP that you
 want to parallelize a specific region of code.
 

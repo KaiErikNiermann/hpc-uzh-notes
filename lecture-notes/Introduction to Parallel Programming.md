@@ -238,11 +238,11 @@ parallelize the workload.
 
 ### Equation
 
-$$\text{Speedup}(N) = \frac{T_{S}}{T_{P}(N)} = \alpha + N(1 - \alpha)$$Speedup(N)=TP​(N)TS​​=α+N(1−α)
+$$\text{Speedup}(N) = \frac{T_{S}}{T_{P}(N)} = \alpha + N(1 - \alpha)$$
 
 ### Observation
 
-$$\underset{N\rightarrow\infty}{\lim}\lbrack\text{S}(N)\rbrack = N(1 - \alpha)$$N→∞lim​\[S(N)\]=N(1−α)
+$$\underset{N\rightarrow\infty}{\lim}\lbrack\text{S}(N)\rbrack = N(1 - \alpha)$$
 
 The key thing to note here is that as opposed to Ahmdals law which
 suggests that the speedup is limited by the non-parallel portion
@@ -314,9 +314,6 @@ increasing rapidly. This being a prominent issue with the memory wall.
 
 Evolution of Supercomputers
 ---------------------------
-
-💡
-
 Over time the architecture of supercomputers has evolved to utilize
 different kinds of hardware.
 
@@ -332,9 +329,6 @@ different kinds of hardware.
 
 Communication Networks
 ----------------------
-
-💡
-
 Within the context of HPC you often need to **connect a vast number of
 processors** for the parallel computation of large-scale tasks. This
 requires **high-performance networking infrastructure** to facilitate
@@ -343,19 +337,16 @@ efficient communication and data exchange among processors.
 ### Basic requirements
 
 **Switches**
-
 To connect nodes in an HPC cluster you need **network switches** which
 act as a central hub for data exchange.
 
 **Fiber cables**
-
 Fiber cables are used to connect each node to the switch, ensuring fast
 and reliable data transfer.
 
 ### Layout
 
 **Fat-Tree network topology**
-
 The networks also need to follow some sort of layout, this is where
 fat-tree network topology comes in. This topology is designed to
 minimize bottlenecks and efficiently handle communication needs of
@@ -368,7 +359,6 @@ some kind of communication protocol that is followed, an example of this
 is
 
 **Infiniband**
-
 High-speed, low-latency data transfer technology and communication
 protocol. With the specifications :
 
@@ -382,18 +372,15 @@ These specifications make Infiniband a popular choice due to the
 exceptional data transfer rate and low latency
 
 ### Configurations and Parameters
-
 The network also generally has certain configuration to maximize the key
 parameters **latency** and **bandwidth**
 
 **Blocking configuration**
-
 In a non-blocking network every node can communicate with every other
 node simultaneously, whereas in a blocking configuration there might be
 limitations on concurrent communication paths.
 
 **Network parameters**
-
 The two key parameters that matter in a network are latency and
 bandwidth. Low latency means fast data transfer and high bandwidth means
 high volume of data transfer.
@@ -414,22 +401,16 @@ effects on users and developers of HPC systems.
 ### Developers
 
 **Clock speed plateau**
-
 Its necessary to exploit many (relatively slow) cores
-
 Performance of individual cores not really increasing anymore
 
 **Memory wall**
-
 The memory per core is constant or even decreasing ; CPUs are memory
 limited
-
 More complex architectures to overcome current limitations
 
 **Parallelism**
-
 High level of parallelism is needed but there are I/O bottlenecks
-
 Multi-disciplinary approach is required leading to concept of co-design
 
 ------------------------------------------------------------------------
@@ -443,23 +424,19 @@ The different aspects of HPC evolution have also led to certain
 programming languages and paradigms to be the current focus nowadays.
 
 ### MPI
-
 The Message Passing Interface programming model which is widely used for
 parallel programming in a cluster is still the dominant programming
 technique nowadays despite its age.
 
 ### OpenMP and MPI approaches
-
 A hybrid approach of using the thread based OpenMP and process based MPI
 model is the most effective way to program on modern HPC systems.
 
 ### GPU message passing
-
 This technique of message passing within the GPU as opposed to the CPU
 is a technique that is gaining popularity.
 
 ### New parallel programming languages
-
 There are various novel parallel programming languages being
 developed/worked on. There are also new runtime systems being developed
 to handle task-based parallelism such as Charm++ and HPX.
