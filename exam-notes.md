@@ -195,7 +195,108 @@ Latency and throughput are two metrics that measure the performance of a compute
     - The `getticks()` function is used to obtain tick counts, and `elapsed()` calculates the difference.
 ---
 # OpenMP 
+## directive based 
+
+## memory model - threads vs cores
+
+## serial and parallel region 
+
+## parallel for loop 
+
+## synchronization and performance 
+
+## shared vs private variables
+
+## OpenMP thread scheduling
+
+---
+# MPI
+## model
+
+## load balancing / domain decomposition 
+
+## compiling MPI programs 
+
+## common functions 
+
+## message passing and common problems
+
+
+---
+# Cloud & Containers 
+## difference between VM and container 
+
+## snapshots 
+
+## ephemeral computing 
+
+## root in vms 
+
+## dockerhub 
+
+## accessing data / mounting
+
+---
+# MapReduce 
+
+## compute sent to data 
+
+## data model 
+
+## map and reduce phase
+
+## key and value
+
+---
+# Hybrid Computing 
+
+## CPU sockets/cores and GPU SMs/cores
+
+## SIMD 
+
+## CPU vs GPU 
+
+## divergence 
+
+## data alignment 
+
+## latency hiding and occupancy 
+
+## instruction latency on GPU vs CPU 
+
+
+---
+# OpenACC
 ## Directive Based 
-- [[Introduction to OpenMP]]
-- [[hpc lecture 3 - MPI and OpenMP.pdf]]
-- [[hpc lecture 6 - OpenMP.pdf]]
+As mentioned before the fundamental way most programmers are going to
+use OpenACC is through directives, the same principle as with OpenMP,
+but in this case its generally meant for parallel programming using the
+GPU.
+## Basic GPU Operations 
+### kernel invocation 
+Similar to the latency caused by starting up a parallel region using MPI
+the cost of invoking the GPU kernel to execute some routine is an
+expensive processes whos trade-off should be well considered.
+### allocation
+1. `pcreate(x[0:N])`: Indicates the creation of a device pointer for array `x` on the GPU, managing it on the device during subsequent parallel loops.
+2. `pcopyout(y[:N])`: Specifies that the data at pointer `y` (representing the computation results) should be copied back from the GPU to the host after the completion of parallel loops.
+## data management 
+
+## difference kernel and parallel 
+
+## difference grid, worker and vector 
+
+## shared vs private variables 
+
+## synchronization 
+
+## async ops 
+
+---
+# CUDA 
+## compiling 
+## streaming multiprocessor 
+
+## grid/block/warp/thread 
+
+## indexing

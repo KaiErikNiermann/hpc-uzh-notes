@@ -3,9 +3,6 @@
 
 OpenACC structure
 -----------------
-
-💡
-
 All programs which make use of OpenACC consist of 3 main parts :
 **compilation directives and clauses**, **functions and routines**,
 **environment variables**
@@ -13,15 +10,8 @@ All programs which make use of OpenACC consist of 3 main parts :
 ### Compilation directives and clauses
 
 **Main functions**
-
 -   Parallelize loops
-
- 
-
 -   Define work and data sharing strategy
-
- 
-
 -   Synchronize different threads/cores
 
 ### Functions and routines
@@ -41,9 +31,6 @@ time and change the parallel computing behavior.
 
 GPU Model and Operations
 ------------------------
-
-💡
-
 OpenACC can target both CPU and GPU architectures so one important thing
 to understand is how OpenACC actually interacts with the GPU.
 
@@ -52,7 +39,6 @@ to understand is how OpenACC actually interacts with the GPU.
 ![](Introduction%20to%20OpenACC%200686e789539744f78902f0ee33207073/Untitled.png)
 
 **Observations**
-
 The GPU has significantly more threads per core allowing for higher
 parallelism.
 
@@ -64,28 +50,17 @@ The communication between the main memory, that is, the RAM, and the GPU
 is slow.
 
 ### GPU Operations
-
 When OpenACC wants to execute something on the GPU it follows the
 following steps
 
 1.  Allocate or free some GPU memory for the executing code
-
- 
-
-1.  Copy data from the “host” to the GPU memory
-
- 
-
-1.  Launch a “kernel” which just means that you flag a routine to run on
+2.  Copy data from the “host” to the GPU memory
+3.  Launch a “kernel” which just means that you flag a routine to run on
     the GPU, so its compiled for the GPU to be executed on there instead
     of the CPU
-
- 
-
-1.  Copy data from the GPU to the host
+4.  Copy data from the GPU to the host
 
 **Notes**
-
 OpenACC handles most of these operations for you, so it abstracts away
 alot of the underlying complexity that comes with GPU programming.
 
@@ -97,9 +72,6 @@ Kernels are executing which can help improver performance.
 
 SAXPY
 -----
-
-💡
-
 SAXPY refers to **single-precision** **aX+YaX + YaX+Y**, which is just
 an acronym that refers to expressions which include both scalar
 multiplication
@@ -193,14 +165,12 @@ work to GPU, data transfer can be implicit or explicit**, **kernel
 invocations are expensive.**
 
 ### Directives
-
 As mentioned before the fundamental way most programmers are going to
 use OpenACC is through directives, the same principle as with OpenMP,
 but in this case its generally meant for parallel programming using the
 GPU.
 
 ### Parallel regions
-
 Again similar to OpenMP we use directives to indicate to the machine
 that we want to create a parallel region here which then leads to the
 work being executed by new spun up threads. In the case of OpenACC it
@@ -208,7 +178,6 @@ works the same way but the work in the parallel regions is offloaded to
 the GPU threads instead of CPU threads.
 
 ### Data transfer
-
 Data transfer between the main memory and the GPU can be implicit, that
 is, its handled without any explicit instruction from the programmer,
 just implicitly as an inherent feature of some directives. Data transfer
@@ -217,7 +186,6 @@ want to transfer certain data to the GPU through the use of certain
 instructions.
 
 ### Kernel invocations
-
 Similar to the latency caused by starting up a parallel region using MPI
 the cost of invoking the GPU kernel to execute some routine is an
 expensive processes whos trade-off should be well considered.
@@ -235,9 +203,6 @@ which the execution returns back to the CPU.
 
 Directive Syntax
 ----------------
-
-💡
-
 Similar to OpenMP directives are specified with the `#pragma` mechanism
 and all follow a similar syntax
 
@@ -247,9 +212,6 @@ and all follow a similar syntax
 
 OpenACC setup and basic compiling
 ---------------------------------
-
-💡
-
 To start working with OpenACC you need to ensure that you have the
 proper compiler to work with GPU code setup and you need to link to
 OpenACC in the compile command.
@@ -285,25 +247,10 @@ saxpy.cpp
 ```
 
 -   the compiler you are using
-
- 
-
 -   the optimization level
-
- 
-
 -   enabling OpenACC
-
- 
-
 -   enabling OpenACC info
-
- 
-
 -   the output executable
-
- 
-
 -   the input source code
 
 So the final command just written out again would be something like this
@@ -316,15 +263,11 @@ CC -O3 -acc -Minfo=acc -o saxpy saxpy.cpp
 
 Kernels construct
 -----------------
-
-💡
-
 The kernel refers to a region of code you specify that **may** contain
 parallelism. The compiler will analyze the block and **if appropriate**
 generate one or more kernels and data transfer operations.
 
 ### General syntax
-
 The general syntax of a kernel block is as follows
 
 ``` code
@@ -335,13 +278,11 @@ The general syntax of a kernel block is as follows
 ```
 
 ### Example - kernel in SAXPY operation
-
 Here we define a kernel for two loops, we can compile this using the
 previous command which should give us the following output.
 
 `saxpy.cpp`
-
-``` code
+``` cpp
 #include <iostream>
 
 int main() {
@@ -372,7 +313,6 @@ int main() {
 ```
 
 `output`
-
 ``` code
 main:
       9, Generating implicit copyout(y[:1000000000],x[:1000000000]) [if not already present]
@@ -396,7 +336,6 @@ main:
 Breaking down this output one by one
 
 `copyout`
-
 ``` code
 9, Generating implicit copyout(y[:1000000000],x[:1000000000]) [if not already present]
 ```
@@ -405,7 +344,6 @@ This refers to OpenACC creating a region to copy the data back from the
 GPU once the computation has finished.
 
 **`loop carried dependence`**
-
 This just refers to the fact that the compiler is assuming that the two
 variables `x` and `y` are *aliased* that is, its assuming they both
 point to the same/overlapping memory. This assumption means that because
@@ -413,8 +351,7 @@ we are updating both of these pointers in the same loop the compiler
 assumes that the modification of one pointer affects the other which
 creates the loop carried dependence.
 
-`Accelerator serial kernel code generated`
-
+**`Accelerator serial kernel code generated`**
 This refers to the fact that due to the loop dependence preventing
 parallelization the work is still offloaded to the GPU but not as a
 parallel kernel but a serial one, so we get a serial execution of the
@@ -423,8 +360,7 @@ work on the GPU.
 ### Example - SAXPY using `restrict` keyword
 
 `saxpy.cpp`
-
-``` code
+``` cpp
 // ...
 float* restrict x = new float[N];
 float* restrict y = new float[N];
@@ -433,8 +369,7 @@ float* restrict y = new float[N];
 ```
 
 `output`
-
-``` code
+``` cpp
 main:
       9, Generating implicit copyout(x[:1000000000],y[:1000000000]) [if not already present]
      11, Loop is parallelizable
@@ -456,16 +391,12 @@ another without effecting the other.
 
 Parallel and Loop construct
 ---------------------------
-
-💡
-
 The `parallel` construct defines a block of code that will be
 parallelized. Some points are that **its the programmers responsibility
 to ensure safety, best used with** `loop` **directive.**
 
 ### Parallel construct syntax
-
-``` code
+``` cpp
 #pragma acc parallel
 {
     // parallel block body
@@ -475,8 +406,7 @@ to ensure safety, best used with** `loop` **directive.**
 Generally combined with the loop construct in the parallel block body
 
 ### Loop construct syntax
-
-``` code
+``` cpp
 #pragma acc parallel
 {
     #pragma acc loop 
@@ -487,13 +417,11 @@ Generally combined with the loop construct in the parallel block body
 ```
 
 ### Example - parallel and loop construct in SAXPY operation
-
 If we use the parallel and loop construct we can tell the compiler that
 it is safe to parallelize the loops which gives us the following output.
 
 `saxpy.cpp`
-
-``` code
+``` cpp
 #include <iostream>
 
 int main() {
@@ -523,7 +451,6 @@ int main() {
 ```
 
 `output`
-
 ``` code
 main:
       9, Generating Tesla code
@@ -621,14 +548,12 @@ int main() {
 Here we used the data construct and two of the data construct operations
 
 `pcreate(x[0:N])`
-
 This clause is used to tell the compiler that you want to create a
 device pointer for the array `x` going from 0 → N on the accelerator
 device (GPU) and have it managed on this device in the subsequence
 parallel loop.
 
 `pcopyout(y[:N])`
-
 This clause tells the compiler that we want to copy back the data at
 pointer `y` from range 0 → N *after* the parallel loop, that is, after
 everything has completed executing. Which I think makes sense because
@@ -642,7 +567,6 @@ data constructs, that is, when we are using data constructs in functions
 we are calling in data constructs for example.
 
 `saxpy.cpp`
-
 ``` code
 #include <iostream>
 
