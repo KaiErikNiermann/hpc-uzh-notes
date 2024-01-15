@@ -196,19 +196,26 @@ Latency and throughput are two metrics that measure the performance of a compute
 ---
 # OpenMP 
 ## directive based 
-
+- [[Introduction to OpenMP]]
+- [[hpc lecture 6 - OpenMP.pdf]]
 ## memory model - threads vs cores
-
+- [[Introduction to OpenMP]]
+- [[hpc lecture 6 - OpenMP.pdf]]
 ## serial and parallel region 
-
+- [[Introduction to OpenMP]]
+- [[hpc lecture 6 - OpenMP.pdf]]
 ## parallel for loop 
-
+- [[Introduction to OpenMP]]
+- [[hpc lecture 6 - OpenMP.pdf]]
 ## synchronization and performance 
-
+- [[Introduction to OpenMP]]
+- [[hpc lecture 6 - OpenMP.pdf]]
 ## shared vs private variables
-
+- [[Introduction to OpenMP]]
+- [[hpc lecture 6 - OpenMP.pdf]]
 ## OpenMP thread scheduling
-
+- [[Introduction to OpenMP]]
+- [[hpc lecture 6 - OpenMP.pdf]]
 ---
 # MPI
 ## model
@@ -225,16 +232,75 @@ Latency and throughput are two metrics that measure the performance of a compute
 ---
 # Cloud & Containers 
 ## difference between VM and container 
+### container 
+Containers are lightweight, portable, and self-contained executable images that contain software applications and their dependencies. They are used to deploy and run applications in a consistent way across different environments, such as development, staging, and production. Containers are typically deployed from an image by using an orchestration platform, like Kubernetes. These platforms provide a way to manage and deploy containers at scale.
 
+Containers have a number of benefits over traditional virtualization methods. As they are more lightweight and portable than VMs, containers support decomposition of a monolith into microservices. Containers are faster to manage and deploy than VMs, which can save time and money with application deployment.
+### virtual machine 
+Virtual machines (VMs) or guests represent instances of an operating system co-located on a physical machine through the use of a hypervisor. Each VM has its own operating system, memory, and other resources, which are isolated from the other VMs on the same physical computer. This allows multiple operating systems to run on the same physical components without interfering with each other.
+
+Virtual machines are created and managed using hypervisor software. A hypervisor is software that manages a physical computer's resources and allocates them to virtual machines.
+### differences 
+Virtual machines access the hardware of a physical machine through a hypervisor. The hypervisor creates an abstraction layer allowing the VM to access CPU, memory, and storage. Containers, on the other hand, represent a package that includes an executable with the dependencies it needs to run.
+
+This means that each container shares the physical machine's hardware and operating system kernel with other containers.
+
+As a result, virtual machines are typically more resource-intensive than containers. However, virtual machines also provide a high level of isolation, which can be important for security and compliance reasons. Containers are more lightweight and portable than virtual machines. This makes them a good choice for applications that need to be deployed quickly and easily, where compute must be optimized.
 ## snapshots 
-
+- [[Cloud and Containers]]
+- [[hpc lecture 9 - Cloud and Containers.pdf]]
 ## ephemeral computing 
-
+Ephemeral computing is the practice of creating a virtual computing environment as a need arises and then destroying that environment when the need is met, and the resources are no longer in demand. You pay only for what’s used when it’s used. The value proposition of ephemeral computing is hard to ignore.
 ## root in vms 
-
+lmao
 ## dockerhub 
+### Docker registries
+A Docker registry stores Docker images. Docker Hub is a public registry that anyone can use, and Docker looks for images on Docker Hub by default. You can even run your own private registry.
 
+When you use the docker pull or docker run commands, Docker pulls the required images from your configured registry. When you use the docker push command, Docker pushes your image to your configured registry.
+### Docker objects
+When you use Docker, you are creating and using images, containers, networks, volumes, plugins, and other objects. This section is a brief overview of some of those objects.
+### Images
+An image is a read-only template with instructions for creating a Docker container. Often, an image is based on another image, with some additional customization. For example, you may build an image which is based on the ubuntu image, but installs the Apache web server and your application, as well as the configuration details needed to make your application run.
+
+You might create your own images or you might only use those created by others and published in a registry. To build your own image, you create a Dockerfile with a simple syntax for defining the steps needed to create the image and run it. Each instruction in a Dockerfile creates a layer in the image. When you change the Dockerfile and rebuild the image, only those layers which have changed are rebuilt. This is part of what makes images so lightweight, small, and fast, when compared to other virtualization technologies.
+### Containers
+A container is a runnable instance of an image. You can create, start, stop, move, or delete a container using the Docker API or CLI. You can connect a container to one or more networks, attach storage to it, or even create a new image based on its current state.
+
+By default, a container is relatively well isolated from other containers and its host machine. You can control how isolated a container's network, storage, or other underlying subsystems are from other containers or from the host machine.
+
+A container is defined by its image as well as any configuration options you provide to it when you create or start it. When a container is removed, any changes to its state that aren't stored in persistent storage disappear.
 ## accessing data / mounting
+### **Volumes in Docker: A Concise Overview**
+
+Volumes are the preferred method for persisting Docker container data. Unlike bind mounts, volumes are fully managed by Docker, providing several advantages:
+
+- **Backup and Migration:** Volumes are easier to back up or migrate compared to bind mounts.
+- **Management:** Docker CLI commands or the Docker API can manage volumes.
+- **Cross-Platform Compatibility:** Volumes work seamlessly on both Linux and Windows containers.
+- **Multi-Container Sharing:** Volumes can be safely shared among multiple containers.
+- **Advanced Functionality:** Volume drivers enable features like storing volumes remotely, encryption, and more.
+- **Pre-population:** New volumes can be pre-populated by a container.
+- **Performance:** Docker Desktop volumes outperform bind mounts on Mac and Windows hosts.
+
+*Considerations for Docker Host Volumes:*
+
+- Use tmpfs mounts for non-persistent state data to enhance performance and avoid permanent storage.
+- Volumes use rprivate bind propagation, and bind propagation is not configurable for volumes.
+
+*Choosing Between -v and --mount:*
+
+- **-v or --volume:** Consists of three colon-separated fields. The first is the volume name (for named volumes) or omitted (for anonymous volumes). The second is the container path, and the third is optional options.
+  
+- **--mount:** Consists of key-value pairs separated by commas, offering more explicit syntax. The order of keys is insignificant, providing a clearer understanding of the flag's value. Always use --mount if specifying volume driver options.
+
+*Key Components for --mount:*
+
+1. **Type:** Always "volume" for volume mounts.
+2. **Source:** Volume name for named volumes, omitted for anonymous volumes (can be specified as source or src).
+3. **Destination:** Path where the file or directory is mounted in the container (specified as destination, dst, or target).
+4. **Read-only:** Optional readonly or ro flag for mounting as read-only.
+5. **Volume Options:** Specified with volume-opt, allowing multiple key-value pairs.
 
 ---
 # MapReduce 

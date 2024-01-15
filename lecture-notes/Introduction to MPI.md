@@ -67,12 +67,10 @@ A key distinction is the basic memory model which OpenMP and MPI used to
 implement parallel computations. MPI uses a **distributed memory
 paradigm,** whereas OpenMPI uses a **shared memory paradigm.**
 ### Shared memory
-
 Data are shared implicitly ( by default ) within the node through RAM.
 This is the main method that underlies OpenMP’s implementation of
 parallelism.
 ### Distributed memory
-
 Data are transferred explicitly ( by the developer ) between nodes
 through the network.
 
@@ -84,7 +82,6 @@ parallelism.
 ![](Introduction%20to%20MPI%20be91a41bb4424987ae74d6a74ac0e8ca/Untitled.png)
 
 ### Data distribution
-
 In MPI data are **distributed between nodes** using a **domain
 decomposition strategy**. This being a technique for solving problems by
 dividing the spatial domain of the problem into smaller subdomains.
@@ -107,18 +104,15 @@ Communicators
 All inter-process communications occur via communicator objects, which
 define processes that can talk.
 ### Point-to-point communications
-
 Point-to-point communication involves the **exchange of data** between
 two processes in a **parallel or distributed computing environment**.
 
 **Identification**
-
 One process is the receiver identified by their rank and another is the
 sender likewise identified by their rank. The collection of all
 processes that can talk to each other is called the **communicator**.
 
 ### Message header
-
 As indicated in the introduction messages sent between processes are
 typically also accompanied by a header. To elaborate on the exact
 contents of this header
@@ -141,44 +135,31 @@ exchanged, which can be primitives (e.g. int, float) or more complex
 data structures
 
 ### Transfer modes
-
 For each communication you can select a transfer mode corresponding to a
 specific **protocol.**
 
 **Protocols**
-
 These decide how the data is transferred between processes and can vary
 in things like performance, reliability and other characteristics.
 
 Some examples include
 
 -   Synchronous - So blocking communication
-
- 
-
 -   Asynchronous - Non blocking communication
-
- 
-
 -   Buffered
 
 ------------------------------------------------------------------------
 
 Basic synchronous communication
 -------------------------------
-
-💡
-
 This can be achieved with the `MPI_Send` and `MPI_Recv` function
 
 ### `MPI_Send`
-
 This routine sends a message of `count` elements starting at address
 `buf` and of type `datatype` . The message is tagged by `tag` and is
 sent to the process of rank `dest` within the communicator `comm`.
 
 **Synopsis**
-
 ``` code
 int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
 ```
@@ -186,26 +167,11 @@ int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int ta
 **Input Parameters**
 
 -   **buf**: Initial address of the send buffer (choice)
-
- 
-
 -   **count**: Number of elements in the send buffer (nonnegative
     integer)
-
- 
-
 -   **datatype**: Datatype of each send buffer element (handle)
-
- 
-
 -   **dest**: Rank of the destination (integer)
-
- 
-
 -   **tag**: Message tag (integer)
-
- 
-
 -   **comm**: Communicator (handle)
 
 ### `MPI_Recv`

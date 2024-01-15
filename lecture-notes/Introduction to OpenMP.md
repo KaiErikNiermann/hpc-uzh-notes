@@ -512,13 +512,11 @@ Hello World 30.100000
 ```
 
 **Result**
-
 As `a` is by default shared between all threads it initially has a value
 of `10.10` then; in an order decided by the thread scheduler; the
 variable `a` is incremented by the threads.
 
 **Key observation**
-
 We can see here that within two threads the value of `a` is the same,
 this is due to the fact that one thread incremented as it should, but
 another thread also tried incrementing but due to OpenMPs deadlock
@@ -527,8 +525,7 @@ prevention mechanism it evidently was not given access to
 ### Manual specification - thread local private
 
 `test.c`
-
-``` code
+``` cpp
 #include <omp.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -547,7 +544,7 @@ int main(int argc, char** argv) {
 
 `output`
 
-``` code
+``` cpp
 Hello World 20.000000
 Hello World 20.000000
 Hello World 20.000000
@@ -581,14 +578,11 @@ region. We can do this by using the `firstprivate(a)` which
 
 1.  Initializes the value of a variable used in a parallel region to the
     its value in the global region
-
- 
-
-1.  Makes the variable private, same as the `private(a)` clause
+2.  Makes the variable private, same as the `private(a)` clause
 
 `test.c`
 
-``` code
+``` cpp
 #include <omp.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -625,9 +619,6 @@ same value on all threads.
 
 Work Distribution using OpenMP
 ------------------------------
-
-💡
-
 The obvious main benefit of OpenMP is to use multithreading as a means
 of parallelizing / distributing work, which can be done primarily
 through something like loops, which OpenMP has directives for
@@ -672,13 +663,12 @@ of a parallel loop.
 ### Basic parallel loop
 
 **Expanded version**
-
 This is the basic anatomy of a parallel loop, we first declare a
 parallel region, since we obviously want the loop to occur in a parallel
 context, then we use the `for` directive to tell OpenMP that we want to
 parallelize the loop iterations.
 
-``` code
+``` cpp
 #include <omp.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -697,11 +687,10 @@ int main(int argc, char** argv) {
 ```
 
 **Condensed version**
-
 This is the exact same as the version above but just using a more
 condensed syntax.
 
-``` code
+``` cpp
 #include <omp.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -717,7 +706,6 @@ int main(int argc, char** argv) {
 ```
 
 ❗**Observation**
-
 Starting a parallel region is **expensive** so its often good to have
 one parallel region containing multiple parallelized **for** directives.
 
@@ -750,9 +738,6 @@ schedules the threads.
 
 Work scheduling
 ---------------
-
-💡
-
 This is a way of manually deciding how OpenMP divides up the work of the
 different loop iterations, this is done using the `schedule()` directive
 by the programmer, which takes various arguments denoting different
@@ -763,19 +748,16 @@ brevity thought it would be simpler to just show the directive as
 opposed to copy pasting boilerplate.
 
 ### Using `schedule(static, n)`
-
 Using this directive we are telling OpenMP that we want to divide the
 loop into exactly `n` separate chunks. Where the chunks are assigned to
 the threads in a cyclic manner (round-robin algorithm).
 
 `test.c`
-
-``` code
+``` cpp
 #pragma omp parallel for schedule(static, 4)
 ```
 
 `output`
-
 ``` code
 Thread 1: 4
 Thread 1: 5
@@ -900,9 +882,6 @@ was non-uniform.
 
 Reduction operation
 -------------------
-
-💡
-
 I think rather intuitively breaking up a problem often times literally
 manifests into creating partial results to a problem and them combining
 these results, this is what the `reduce()` directive is meant for.
@@ -939,8 +918,7 @@ chosen operator.
 ### Basic example
 
 `test.c`
-
-``` code
+``` cpp
 #include <omp.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -981,9 +959,6 @@ responsible iterations it has a partial sum, that collectively sum to 8
 
 Controlling variables in parallel loops
 ---------------------------------------
-
-💡
-
 A key thing to understand when dividing up work using parallel loops is
 if you want the loops to work together on something (i.e. shared
 variables ) or if you want them to work in an isolated setting on data (
@@ -1016,7 +991,7 @@ times by the rank of this just being 3, hence is 6.
 
 `test.c`
 
-``` code
+``` cpp
 #include <omp.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -1060,9 +1035,6 @@ are leaving a parallel section.
 
 Exclusive execution
 -------------------
-
-💡
-
 Somewhat similar to how `parallel for` leads to chunks of loop
 iterations being distributed amongst threads you can manually designate
 chunks of code to likewise be distributed amongst threads using
@@ -1095,7 +1067,6 @@ thread**.
 Expresses that you want to execute a code on the **master thread**.
 
 ### Broadcasting
-
 Sometimes you might be doing some modifications to a variable in a
 single thread but after this you want all threads to have this updated
 value. To achieve this you can use the `copyprivate(a)` clause to
@@ -1104,8 +1075,7 @@ broadcast `a` to all threads.
 **Using** `copyprivate(a)`
 
 `test.c`
-
-``` code
+``` cpp
 #include <omp.h>
 #include <stdio.h>
 
@@ -1129,7 +1099,6 @@ int main() {
 ```
 
 `output`
-
 ``` code
 Thread 1: a=1, b=0
 Thread 3: a=1, b=0
@@ -1140,7 +1109,6 @@ Thread 2: a=1, b=0
 **Not using** `copyprivate(a)`
 
 `test.c`
-
 ``` code
 #include <omp.h>
 #include <stdio.h>
@@ -1165,7 +1133,6 @@ int main() {
 ```
 
 `output`
-
 ``` code
 Thread 2: a=0, b=0
 Thread 0: a=0, b=0
@@ -1180,7 +1147,6 @@ single thread execution clearly its only changed in thread 1 due to
 being private.
 
 ### Basic example
-
 Similar to creating a parallel region in which we handle loops, we can
 combine the `parallel` directive with the `sections` directive, to
 denote that the parallel region will contain `section` ( be aware of the
@@ -1190,7 +1156,7 @@ If we choose 2 threads (0 and 1) we get the following results.
 
 `test.c`
 
-``` code
+``` cpp
 #include <omp.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -1243,18 +1209,9 @@ Thread 0: sum = 1
 Here we have 4 sections
 
 1.  Adding 1
-
- 
-
-1.  Adding 2
-
- 
-
-1.  Adding 3
-
- 
-
-1.  Adding 4
+2.  Adding 2
+3.  Adding 3
+4.  Adding 4
 
 Thread 0 was assigned to execute (1)
 
@@ -1264,14 +1221,10 @@ Thread 1 was assigned to execute (2), (3) and (4)
 
 Synchronization
 ---------------
-
-💡
-
 I’ve mentioned `nowait` a bit before but wanted to actually now
 demonstrate what it means to not wait.
 
 ### General theory
-
 Fundamentally synchronization is necessary to ensure all threads have
 reached a given line in a program. In other words to ensure they have
 all executed their denoted segment of work.
@@ -1285,22 +1238,18 @@ many OpenMP constructs have an implicit barrier. So that all threads in
 a parallel region finish execution before proceeding.
 
 **Removing synchronization**
-
 This implicit barrier can often be removed by appending the `nowait`
 clause.
 
 **Forcing synchronization**
-
 To force all threads within a parallel region to be synchronized we can
 use the `barrier` directive
 
 **Avoiding race conditions**
-
 To avoid race conditions we want to use the `atomic` or `critical`
 directive to force a serial variable ( all threads properly ) update
 
 ### **Example - Basic synchronization**
-
 Here we have a simple counter program where we distributed loop
 iterations of incrementing the counter amongst the threads. Furthermore
 we add the `atomic` directive to avoid race conditions. In other words
@@ -1311,8 +1260,7 @@ all threads to update the counter, and only then do we want to print the
 final value.
 
 `test.c`
-
-``` code
+``` cpp
 #include <omp.h>
 #include <stdio.h>
 
@@ -1371,8 +1319,6 @@ parallelism. This being that
     at this stage `c` is 5, so clearly later stages were executed
     scheduled earlier.
 
- 
-
 -   **Loop behavior** - in the context of a single thread things and
     using `nowait` we just have normal behavior, if the loop condition
     no longer holds execution continues, so if we then encounter a
@@ -1380,14 +1326,12 @@ parallelism. This being that
     that thread.
 
 ### Example - Using critical directive
-
 In principle this is similar to atomic but its more general usually
 referring to a segment of code to be executed using locking as opposed
 to atomic operations on single pieces of data like variables.
 
 `test.c`
-
-``` code
+``` cpp
 #include <omp.h>
 #include <stdio.h>
 
@@ -1407,13 +1351,11 @@ int main() {
 ```
 
 `output`
-
 ``` code
 Final counter is 92294
 ```
 
 **Reasoning**
-
 Should be pretty clear at this point, we have 4 threads, each which
 either wait for their turn to access the region then update the
 variable, or just update the variable.
@@ -1436,15 +1378,11 @@ using things like `atomic` or `critical`
 
 Memory Issues
 -------------
-
-💡
-
 How memory is accessed is an aforementioned important part in parallel
 program, so its critical to understand the importance of certain memory
 access patterns.
 
 ### Memory Access Hierarchy
-
 To avoid the memory bottle neck OpenMP programs utilize the memory
 hierarchy. That is, they make use of the fact that certain memory is
 kept close to the CPU to avoid costly accesses to data from the main
@@ -1454,31 +1392,20 @@ memory.
 
 1.  CPU registers, are the fastest form of memory and are directly on
     the CPU
-
- 
-
-1.  L1 cache, this is the second fastest, usually smaller than the lower
+2.  L1 cache, this is the second fastest, usually smaller than the lower
     cache levels
-
- 
-
-1.  L2/L3 cache, these are the third fastest, slower than L1 but still
+3.  L2/L3 cache, these are the third fastest, slower than L1 but still
     significantly faster than RAM
-
- 
-
-1.  RAM, this is the slowest form of memory access, aside from reading
+4.  RAM, this is the slowest form of memory access, aside from reading
     from the hard drive directly
 
 ### **Cache conflicts, misses and benefits**
 
 **Conflicts**
-
 Conflicts between threads can lead to poor cache memory management, this
 in turn can result in Cache misses.
 
 **Misses**
-
 Cache misses refers to the situation when data needed by a thread is not
 present, then the CPU must fetch it from a slower level of the memory
 hierarchy.
@@ -1493,7 +1420,6 @@ machines where main memory is distributed across different sockets and
 local access is faster than remote.
 
 ### Performance analysis
-
 There are various functions to benchmark OpenMP code, to simply measure
 the elapsed time of a segment of code you can use the `omp_get_wtime()`
 function.
