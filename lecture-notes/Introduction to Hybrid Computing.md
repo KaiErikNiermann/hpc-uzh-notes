@@ -23,14 +23,8 @@ DRAM is the “normal” RAM type that you can find in servers, computers,
 and the main memory of GPUs.
 
 -   **Single capacitor** to hold **each bit**
-
- 
-
 -   **Capacitors** leak so they must be periodically **refreshed** to
     hold their state
-
- 
-
 -   DRAM has **worse performance** but also a **larger capacity**
 
 **Static RAM**
@@ -39,17 +33,10 @@ SRAM is used in various type of electronics that require a higher
 performance memory for working storage.
 
 -   **Six transistors** to hold each bit
-
- 
-
 -   Does not use capacitors thus does not need any refreshing
-
- 
-
 -   SRAM has **better performance** but a **lower capacity**
 
 ### Modern computing models
-
 In modern memory layout for the CPU you typically have a layer of **SRAM
 Cache Memory** which interfaces with the **memory controller** which
 itself interfaces with the slower **DRAM.**
@@ -99,7 +86,6 @@ memory access time depend on the memory location relative to the
 processor.
 
 ### Multi-core and Multi-CPU Systems
-
 Modern High Performance Computing systems often have multiple CPUs each
 having their own number of cores, one way to abstractly represent this
 design is as follows
@@ -107,7 +93,6 @@ design is as follows
 ![](Untitled%205.png)
 
 **Embedded memory controller**
-
 A memory controller, which controls the flow of data coming to and from
 the main memory can either be separate as in the diagram above, or
 integrated onto the CPU. When a memory controller is integrated onto the
@@ -116,13 +101,11 @@ CPU its generally called an **integrated memory controller (IMC)**
 ![](Untitled%206.png)
 
 ### Example - CPU with IMC and embedded L3 cache
-
 The Xeon processor lineup from intel which is generally used in high
 performance computing has a few CPUs which follow the above design. An
 example of this would be the **Intel Core i7-5960X**
 
 **Processor Die Map**
-
 We can see here that it has an integrated memory controller and an
 embedded shared L3 cache between all of the cores.
 
@@ -132,15 +115,11 @@ embedded shared L3 cache between all of the cores.
 
 Vector processor and instructions
 ---------------------------------
-
-💡
-
 A **vector processor** is a CPU that implements **vector instructions**
 which are designed to operate efficiently and effectively on large
 one-dimentional arrays of data called **vectors**.
 
 ### Advanced Vector Extension (AVX)
-
 AVX are **Single Instruction Multiple Data** extensions to the x86
 instruction set architecture. Meaning they implement vector instructions
 for compatible vector processors of the x86 architecture such as the
@@ -149,7 +128,6 @@ refers to the size of the vector on which the vector instruction can
 preform some given operation.
 
 ### Array addition vector instructions
-
 A basic example of a vector instruction is just the direct addition of
 two arrays.
 
@@ -165,7 +143,6 @@ In both cases we can see how over time the size of the vectors you could
 preform parallel operations on has increased.
 
 ### Performance improvements of AVX
-
 We can demonstrate the speedup that comes with processors that can use
 AVX as follows. First we define the performance of a processor by the
 expression
@@ -186,9 +163,6 @@ There are two main observations that can be made here
 -   Intuitively I think AVX outperforms scalar flops due to the fact
     that its just computing more within the same timespan in a
     concurrent manner.
-
- 
-
 -   With a higher core count you are limited by scaling, that is, the
     clock speed does not scale with the core count. In the case of
     perfect scaling we retain the same clock speed as for just a single
@@ -198,23 +172,18 @@ There are two main observations that can be made here
 
 Data Layout
 -----------
-
-💡
-
 The layout of data in memory is something important to consider in High
 Performance computing. Its generally faster to access **contiguous
 memory** because they can be **loaded into the cache** more efficiently
 than non-contiguous memory.
 
 ### Array Layout - Fortran
-
 One very important basic thing to note for data layout is that when
 looping over arrays you want to loop over them in a contiguous manner.
 This means also being aware how arrays are layed out in memory which
 differs for different languages.
 
 **C/C++ - 2D arrays**
-
 In C and C++ data arrays, especially 2D arrays have a row layout, so to
 write better performance code you would want to loop over these arrays
 in a row like fashion.
@@ -222,7 +191,6 @@ in a row like fashion.
 ![](Untitled%2012.png)
 
 **Fortran - 2D arrays**
-
 In Fortran on the other hand arrays have a column layout, so here you
 want to loop over the arrays by columns.
 
@@ -237,7 +205,6 @@ that just loops over a 2D array by row (non-contiguous) vs by column
 **Row iteration**
 
 `a1.f90`
-
 ``` code
 program array
     real,dimension(10000,10000) :: a
@@ -271,7 +238,6 @@ is compiled.
 **Column iteration**
 
 `a2.f90`
-
 ``` code
 program array
     real,dimension(10000,10000) :: a
@@ -306,7 +272,6 @@ due to the aforementioned fact that we are now looping over the array in
 a contiguous fashion which makes it easier to load into the cache.
 
 ### Effect of different compilers
-
 Compilers can sometimes understand when you are preform an equivalent
 slower operation. Like the row iteration in Fortran and then optimize
 this to use column iteration instead. Which means sometimes you don’t
@@ -377,7 +342,6 @@ the SIMD instruction.
 ![](Untitled%2016.png)
 
 ### Divergence
-
 Divergence is another factor which is important in the runtime of HPC
 code. In the context of HPC divergence refers to the situation where
 different parallel threads or processes execute different branches of a
@@ -385,7 +349,6 @@ conditional statement which can lead to performance degradation,
 synchronization problems or just a wrong result in the computation.
 
 **Mitigating divergence**
-
 So when writing high performance parallel code you generally want to
 mitigate divergence. So its generally good to try and be aware of
 potential places where diverge could occur and of mitigation methods
@@ -395,9 +358,6 @@ like using divergence optimizing compilers, and other means.
 
 Graphics Processing Unit (GPU)
 ------------------------------
-
-💡
-
 The GPU is of particular relevance in HPC because as opposed to the CPU
 its **optimized for parallel tasks.** It has a lower main memory and
 per-thread performance than a CPU though it compensates for this by
@@ -405,7 +365,6 @@ having a **higher thread-count.** It also has **more compute resources**
 than a CPU.
 
 ### Bottleneck
-
 One point of particular relevance with GPU computations it the potential
 bottlenecks between transfer points such as the CPU ↔ GPU or GPU ↔
 Memory. If there isn’t a balance maintained with the memory transfer
@@ -414,7 +373,6 @@ to a bottleneck. As an example we can compare the P100 and the A100 GPUs
 from NVIDEA
 
 ### CPU ↔ GPU \| **Comparison P100 vs A100**
-
 |                               |             |              |
 |-------------------------------|-------------|--------------|
 | PCIe                          | 32GB/s      | 64GB/s       |
@@ -429,7 +387,6 @@ the speed of floating point operations, meaning in respect to the P100
 the A100 does not introduce any bottlenecks.
 
 ### Memory↔ GPU \| **Comparison P100 vs A100**
-
 |                               |             |              |
 |-------------------------------|-------------|--------------|
 | Memory                        | 732 GB/s    | 1555 GB/s    |
@@ -443,30 +400,21 @@ means we can still preform the same number of floating point operations
 per transferred float but at a much higher rate without any bottleneck.
 
 ### Features of the P100
-
 There are some core features that define the performance of the P100 GPU
 
 **Streaming Multiprocessor (SM)**
-
 These are the multiprocessors where the actual computation takes place,
 some features of these are that
 
 -   They consists of many individual **streaming processors (SP) /
     cores**
-
- 
-
 -   The P100 has many streaming multiprocessors
 
 **Registers**
-
 Registers are small storage areas which an SM can use for computations,
 some notes on these in regards to the P100 are that
 
 -   It has 32768 registers in total for 32 SMs
-
- 
-
 -   Per SM the P100 has 1024 registers
 
 **Threads**
@@ -474,34 +422,24 @@ some notes on these in regards to the P100 are that
 Each core can handle multiple threads, some points on this are
 
 -   Each SM in the P100 can handle 32 threads
-
- 
-
 -   In total the P100 can handle 1024 threads
-
- 
-
 -   Each thread has access to 32 storage registers
 
 **Precision**
-
 This refers to the types of numbers the P100 can process, this being
 specifically single precision (32bit) and double precision (64bit)
 numbers.
 
 **WARP**
-
 WARP refers to a group of 32 threads being executed concurrently in an
 SM, which is a characteristic of the SIMD instructions being used in the
 GPUs.
 
 **Fast memory**
-
 This refers to the shared memory that is available to all cores in an
 SM.
 
 ### Hiding Latency
-
 As mentioned before a GPU can compensate for its lower memory and
 per-thread performance by using parallelism to hide the resultant
 latency of individual computations. It does this by overlapping
@@ -509,7 +447,6 @@ Independent calculations to hide the latency of any individual
 calculations through the speedup gained from concurrency.
 
 **Example**
-
 ![](Untitled%2017.png)
 
 Here we have an example table which demonstrates the latency for two
@@ -518,7 +455,6 @@ cycle and the necessary number of these instructions we would need to
 concurrently execute to hide the latency of any individual instruction.
 
 **Handling stalls**
-
 Another way of hiding latency, specifically generated by stalls, which
 is when a thread is waiting for something else to happen is simply
 switch to another thread to continue any other computations and keep the
@@ -529,28 +465,21 @@ GPU busy. This process of utilizing all available threads is called
 
 GPU Programming
 ---------------
-
-💡
-
 GPU programming is just the act of running a program which can make use
 of big parallelism on a GPU. Two popular ways of doing this is either
 with the use of **OpenACC** or **CUDA**.
-
 ### Example - OpenACC Program
-
 OpenACC is similar to OpenMPI in that you enable parallelism through
 compiler directives that identify areas which should be parallelized.
 But it differentiates itself by the fact that you can target both the
 CPU or GPU to execute this program.
 
 **The actual program code**
-
 For some example code lets use the algorithm which finds a numerical
 solution for pi.
 
 `cpi_openacc.c`
-
-``` code
+``` cpp
 #include <stdio.h>
 
 double getTime(void);
@@ -588,7 +517,6 @@ operation on the sum variable along with keeping `x` private for all
 spawned threads.
 
 **Running the program**
-
 To run the program we want to first load the necessary modules on our
 HPC then compile it by linking with OpenACC and then we can run the
 final executable.

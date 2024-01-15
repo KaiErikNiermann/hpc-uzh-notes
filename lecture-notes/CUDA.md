@@ -254,8 +254,7 @@ printf("Result: %d\n", c);
 The full code would then look something like this
 
 [`add.cu`](http://add.cu)
-
-``` code
+``` cpp
 #include <stdio.h>
 
 __global__ void add(int *a, int *b, int *c) {
@@ -312,7 +311,7 @@ function which takes the `err_code` returned from a call like
 means. You can implement this as a function or more simply as a macro
 like this.
 
-``` code
+``` cpp
 #define CUDA_CHECK_ERROR(err) \
     do { \
         if (err != cudaSuccess) { \
@@ -407,7 +406,7 @@ add<<<1, N>>>(d_a, d_b, d_c); // lauinching N parallel blocks
 This stays largely the same, we just allocate in terms of arrays now
 instead of scalar values, so it looks like this
 
-``` code
+``` cpp
 // Host copies of a, b, c
 int *a, *b, *c;
 
@@ -436,13 +435,11 @@ the arrays with some random values, you can create this yourself or
 presumably find something online that implements this.
 
 **The full code (using blocks)**
-
 So the full code assuming we go with blocks for now would look something
 like this
 
 `vec_add.cu`
-
-``` code
+``` cpp
 #include <stdio.h>
 
 #define N 512
@@ -501,9 +498,6 @@ int main(void) {
 
 Combining Blocks and Threads
 ----------------------------
-
-💡
-
 For optimal performance you want to be combining blocks and threads in
 your computations. But there are certain hardware limitations that have
 to be considered with their application. It also comes at an increasing
@@ -523,25 +517,19 @@ dimensions and indices of everything, these are helpful in defining the
 dimensions of your problem.
 
 **Index ranges**
-
 The thread indexes are defined from `0` → `blockDim.x` - 1
 
 The block indexes go from `0` → `gridDim.x` - 1
 
 **Indices**
-
 The index of the block is defined by `blockIdx.x`
 
 The index of the thread is defined by `threadIdx.x`
 
 ### Indexing arrays
-
-A basic example to demonstrate how this hierarchy of grid → block →
-thread is important is simply indexing arrays in parallel vector
-addition which uses both blocks and threads.
+A basic example to demonstrate how this hierarchy of grid → block → thread is important is simply indexing arrays in parallel vector addition which uses both blocks and threads.
 
 Considering an example with 4 blocks and 8 threads, so programmatically
-
 ``` code
 add<<<4, 8>>>(d_a, d_b, d_c); 
 ```
@@ -551,17 +539,12 @@ We can visualize the layout as follows
 ![](CUDA%204dedf8d793414be2be7ba00a74e5d5b3/Untitled.png)
 
 Here we know that
-
 -   `gridDim.x == 4` So we have 4 blocks
-
- 
-
 -   `blockDim.x == 8` So we have 8 threads
 
-So if we want to define an index to a specific variable in our vector
-then we have to use the following expression
+So if we want to define an index to a specific variable in our vector then we have to use the following expression
 
-$${\texttt{int}\ \texttt{index}} = \texttt{threadIdx.x} + \texttt{blockIdx.x} \times \texttt{blockDim.x}$$int index=threadIdx.x+blockIdx.x×blockDim.x
+$${\texttt{int}\ \texttt{index}} = \texttt{threadIdx.x} + \texttt{blockIdx.x} \times \texttt{blockDim.x}$$
 
 **Example - what thread will operate on the red element ?**
 
@@ -577,8 +560,7 @@ index into the array.
 
 ### Example - vector addition with both blocks and indexes
 
-The resulting function simply uses the expression we defined above the
-calculate this new index
+The resulting function simply uses the expression we defined above the calculate this new index
 
 ``` code
 __global__ void add(int *a, int *b, int *c) {
@@ -589,35 +571,24 @@ __global__ void add(int *a, int *b, int *c) {
 
 Now if we change the size of the array to
 
-$2024^{2}$20242 we have to determine the number of blocks and threads
-to specify. If we assume a block size of 512 for our problem then we can
-use the following formulas to express the thread and block counts for
-the kernel function call.
+$2024^{2}$ we have to determine the number of blocks and threads to specify. If we assume a block size of 512 for our problem then we can use the following formulas to express the thread and block counts for the kernel function call.
 
--   thread counts =
-    $\texttt{block\_size}$block\_size
-
- 
-
--   block counts =
-    $N/\texttt{block\_size}$N/block\_size
+-   thread counts = $\texttt{block\_size}$block\_size
+-   block counts = $N/\texttt{block\_size}$N/block\_size
 
 Which means our kernel function call will look as follows
 
 **Kernel launch**
-
 ``` code
 add<<<N/BLOCKSIZE, BLOCKSIZE>>>(d_a, d_b, d_c);
 ```
 
 ### Arbitrary vector sizes
-
 If `N` is not a multiple of the chosen block size then we have we have
 to use a different more general formula to account for this case to
 avoid any out of bounds array accesses in the kernel function.
 
--   block counts =
-    $(N + \texttt{block\_size})/\texttt{block\_size}$(N+block\_size)/block\_size
+-   block counts = $(N + \texttt{block\_size})/\texttt{block\_size}$
 
 We also have to add an additional bounds check to the kernel function,
 which makes it look as follows.
@@ -630,11 +601,10 @@ __global__ void add(int *a, int *b, int *c, int n) {
 ```
 
 ### Example - combing blocks and threads
-
 So combining all the information above this is what our final code would
 look like
 
-``` code
+``` cpp
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -706,9 +676,6 @@ int main(void) {
 
 Compute Capability
 ------------------
-
-💡
-
 While this is not necessarily that relevant at runtime it is something
 that might be beneficial to specify during compilation.
 
@@ -729,30 +696,20 @@ for example if you are writing CUDA code to be executed on a single GTX
 1080ti then the maximum number of threads per block is 1024.
 
 ### Terminology Recap
-
 To recap some of the terminology, specifically about **thread, warp,
 block,** and **grid**
 
-  -------- ---------------------------------------------------------------------------------------------
-  thread   Each thread is executed by one core.  
-           Cores have multiple threads resident at one time.  
-           Only one thread is executing at one time.  
-
-  warp     A warp consists of 32 cores that share register memory and operate on the same instruction.
-
-  block    Each block is assigned to an SM which consists of multiple warps.  
-           Each SM shares 64KB of memory that can be used to share data between threads.  
-
-  grid     The kernel is run on a grid of blocks.
-  -------- ---------------------------------------------------------------------------------------------
-
-------------------------------------------------------------------------
+| Term   | Description                                                                             |
+|--------|-----------------------------------------------------------------------------------------|
+| Thread | Each thread is executed by one core. Cores have multiple threads resident at one time.  |
+|        | Only one thread is executing at one time.                                              |
+| Warp   | A warp consists of 32 cores that share register memory and operate on the same instruction.|
+| Block  | Each block is assigned to an SM which consists of multiple warps.                         |
+|        | Each SM shares 64KB of memory that can be used to share data between threads.            |
+| Grid   | The kernel is run on a grid of blocks.                                                  |
 
 Synchronizing between Host and Device
 -------------------------------------
-
-💡
-
 A function you might’ve already seen here in the code is
 `cudaDeviceSynchronize` . Kernel launches are async by default which
 means that the host can continue processing while the kernel is
@@ -760,7 +717,6 @@ launched. So if we need a value from the GPU we have to wait for the
 results to be ready to synchronize.
 
 ### Synchronizing
-
 There are a few functions in particular that are relevant when we talk
 about synchronizing.
 
@@ -778,39 +734,25 @@ about synchronizing.
 
 Detecting Errors
 ----------------
-
-💡
-
 As already mentioned previous detecting errors is something always
 important. The CUDA API calls all return an error code of type
 `cudaError_t`
 
 ### Error code
-
 This code can be either
 
 -   An error in the API call, so for example when we call `cudaMemcpy()`
-
- 
-
 -   An error in an earlier asynchronous operation, such as a kernel
     launch
 
 ### Retrieving the last error
-
 Sometimes you might not be able to easily get the return value of a
 function you just called, in which case you can use the
 `cudaGetLastError(void);` function which returns the last CUDA error
 that was triggered.
 
 ### Converting error code
-
-Since both the different CUDA operations (API calls, async operations)
-just return error codes, that is, codes which represent errors these
-aren’t really that human interpretable. Which is why there is the
-function `cudaGetErrorString(cudaError_t)` which takes a `cudaError_t`
-and returns a `char *` so a pointer to a string of characters which
-express what the error means in a human readable format.
+Since both the different CUDA operations (API calls, async operations) just return error codes, that is, codes which represent errors these aren’t really that human interpretable. Which is why there is the function `cudaGetErrorString(cudaError_t)` which takes a `cudaError_t` and returns a `char *` so a pointer to a string of characters which express what the error means in a human readable format.
 
 Using the aforementioned macro we can print the error as follows
 
@@ -824,22 +766,17 @@ Using the aforementioned macro we can print the error as follows
     } while (0)
 ```
 
-Here we are printing the error to the `stderr` stream and exiting the
-program.
+Here we are printing the error to the `stderr` stream and exiting the program.
 
 ------------------------------------------------------------------------
 
 Multiple Device Management
 --------------------------
-
-💡
-
 A host may have more than one connected device, that is, a CPU may have
 multiple GPUs it can interface with, so CUDA has functions that assist
 in the management of these devices.
 
 ### Device management functions
-
 |                                  |                                                                             |
 |----------------------------------|-----------------------------------------------------------------------------|
 | `cudaGetDeviceCount(int *count)` | Write the number of connected devices into the memory pointed to by `count` |
@@ -855,9 +792,6 @@ operation.
 
 3D Indexing
 -----------
-
-💡
-
 A kernel is launched as a grid of blocks and threads. Before we were
 only using the `x` component of this grid but the builtin variables also
 have a `y` and `z` component. Which is a useful feature for problems
@@ -873,9 +807,6 @@ The total number of threads can be defined by
 
 Sharing Data Between threads
 ----------------------------
-
-💡
-
 How memory is shared between threads is another important thing to
 consider.
 

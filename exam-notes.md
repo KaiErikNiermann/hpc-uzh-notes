@@ -315,24 +315,63 @@ Volumes are the preferred method for persisting Docker container data. Unlike bi
 
 ---
 # Hybrid Computing 
-
+- [[Introduction to Hybrid Computing]]
+- [[hpc lecture 11 - Hybrid Computing Introduction.pdf]]
 ## CPU sockets/cores and GPU SMs/cores
+### Kernels (in software)
+A function that is meant to be executed in parallel on an attached GPU is called a kernel. In CUDA, a kernel is usually identified by the presence of the __global__ specifier in front of an otherwise normal-looking C++ function declaration. The designation __global__ means the kernel may be called from either the host or the device, but it will execute on the device.
 
+Instead of being executed only once, a kernel is executed N times in parallel by N different threads on the GPU. Each thread is assigned a unique ID (in effect, an index) that it can use to compute memory addresses and make control decisions.
+
+Each thread works on a different index (threadID) in an array of inputs to produce an array of outputs
+
+
+Accordingly, kernel calls must supply special arguments specifying how many threads to use on the GPU. They do this using CUDA's "execution configuration" syntax, which looks like this: fun<<<1, N>>>(x, y, z). Note that the first entry in the configuration (1, in this case) gives the number of blocks of N threads that will be launched.
+### Streaming multiprocessors (in hardware)
+On the GPU, a kernel call is executed by one or more streaming multiprocessors, or SMs. The SMs are the hardware homes of the CUDA cores that execute the threads. The CUDA cores in each SM are always arranged in sets of 32 so that the SM can use them to execute full warps of threads. The exact number of SMs available in a device depends on its NVIDIA processor family (Volta, Turing, etc.), as well as the specific model number of the processor. Thus, the Volta chip in the Tesla V100 has 80 SMs in total, while the more recent Turing chip in the Quadro RTX 5000 has just 48.
+
+However, the number of SMs that the GPU will actually use to execute a kernel call is limited to the number of thread blocks specified in the call. Taking the call fun<<<M, N>>>(x, y, z) as an example, there are at most M blocks that can be assigned to different SMs. A thread block may not be split between different SMs. (If there are more blocks than available SMs, then more than one block may be assigned to the same SM.) By distributing blocks in this manner, the GPU can run independent blocks of threads in parallel on different SMs.
+
+Each SM then divides the N threads in its current block into warps of 32 threads for parallel execution internally. On every cycle, each SM's schedulers are responsible for assigning full warps of threads to run on available sets of 32 CUDA cores. (The Volta architecture has 4 such schedulers per SM.) Any leftover, partial warps in a thread block will still be assigned to run on a set of 32 CUDA cores.
+
+The SM includes several levels of memory that can be accessed only by the CUDA cores of that SM: registers, L1 cache, constant caches, and shared memory. The exact properties of the per-SM and global memory available in Volta GPUs will be outlined shortly.
 ## SIMD 
+Single instruction, multiple data (SIMD), is a class of parallel computers in Flynn's taxonomy. It describes computers with multiple processing elements that perform the same operation on multiple data points simultaneously. Thus, such machines exploit data level parallelism, but not concurrency: there are simultaneous (parallel) computations, but only a single process (instruction) at a given moment. SIMD is particularly applicable to common tasks like adjusting the contrast in a digital image or adjusting the volume of digital audio. Most modern CPU designs include SIMD instructions in order to improve the performance of multimedia use.
 
+In short, SIMD allows for processing several data values with one single instruction. It's a cheap way to increase the computational power of CPUs: What is mostly needed are wide ALUs (those are cheap) and comparatively little control logic.
+
+To unlock the computation potential of modern CPUs it is essential to utilize SIMD instructions.
+### packed data
+SIMD engines usually work with wide registers (a typical number is 128 bits) that can contain several independent values. A typical 128 bit SIMD register can contain...
+
+sixteen 8 bit integer values (int8x16 and uint8x16)
+eight 16 bit integer values (int16x8 and uint16x8)
+four 32 bit integer values (int32x4 and uint32x4)
+four single precision floating point values (float32x4)
+two double precision floating point values (float64x2)
+SIMD registers essentially contain vectors. SIMD instructions thus essentially are vector instructions. Awesome!
+### operations on packed data
+To actually get something done with SIMD operations are needed that work on SIMD data types.
+
+A list of typical operations is assembled on the SIMD Operations page.
+### SIMD instruction sets
+SSE2: Available on every not completely outdated CPU from Intel, AMD, or VIA. The SSE2 instructions are guaranteed to be available on all 64-bit x86-CPUs („x86-64“).
+AVX: Available on modern high-performance CPUs from Intel and AMD.
+NEON: Available on basically every modern ARM-compatible CPU designed for general purpose applications (for instance, the vast majority of ARM CPUs in smartphones or tablets support NEON).
 ## CPU vs GPU 
 
 ## divergence 
-
+slides
 ## data alignment 
-
+slides
 ## latency hiding and occupancy 
-
+slides
 ## instruction latency on GPU vs CPU 
-
+slides
 
 ---
 # OpenACC
+- [[Introduction to OpenACC]]
 ## Directive Based 
 As mentioned before the fundamental way most programmers are going to
 use OpenACC is through directives, the same principle as with OpenMP,
@@ -360,9 +399,54 @@ expensive processes whos trade-off should be well considered.
 
 ---
 # CUDA 
+- [[CUDA]]
+- [[cuda-by-example.pdf]]
+### summary
+1. **Host and Device:**
+    - The host represents the CPU, and its associated memory is called host memory.
+    - The GPU is referred to as the device, with its memory known as device memory.
+2. **CUDA Program Execution Steps:**
+    - Copy input data from host memory to device memory (host-to-device transfer).
+    - Load GPU program, execute, and cache data on-chip for performance.
+    - Copy results from device memory to host memory (device-to-host transfer).
+3. **CUDA Kernel and Thread Hierarchy:**
+    - CUDA kernel is a function executed on the GPU.
+    - Kernel is executed as a grid of blocks of threads.
+    - Each block is executed by one streaming multiprocessor (SM).
+    - Threads and blocks are indexed using built-in 3D variables.
+    - Synchronization within a block is possible using `__syncthreads`.
+4. **CUDA Thread and Block Limits:**
+    - CUDA architecture limits the number of threads per block (1024 threads per block limit).
+    - Thread block dimensions accessible within the kernel through `blockDim` variable.
+5. **Memory Hierarchy:**
+    - GPU memory hierarchy includes registers, shared memory (SMEM), L1 cache, L2 cache, and global memory.
+    - Registers are private to each thread, SMEM is shared within a block, and global memory is shared across all SMs.
+6. **Memory Types:**
+    - Read-only memory includes instruction cache, constant memory, texture memory, and RO cache.
+    - L2 cache is shared across all SMs, with increased size in newer GPU models.
+    - Global memory is the framebuffer size of the GPU and DRAM in the GPU.
+7. **Compute Capability:**
+    - Compute capability of a GPU is denoted as X.Y, where X is the major revision and Y is the minor revision.
+    - Minor revision may include incremental improvements or new features.
+    - Applications can use compute capability at runtime to determine available features.
+8. **Summary:**
+    - CUDA provides a heterogeneous environment with host code running on the CPU and kernels on a separate GPU.
+    - Separate memory spaces for host and device (host memory and device memory).
+    - CUDA facilitates data transfer between host and device memory over the PCIe bus.
+    - Built-in variables and multi-dimensional indexing ease programming.
+    - Memory hierarchy optimization is possible for advanced CUDA developers.
 ## compiling 
+slides
 ## streaming multiprocessor 
-
+see previous
 ## grid/block/warp/thread 
-
+| Term | Description |
+| ---- | ---- |
+| Thread | Each thread is executed by one core. Cores have multiple threads resident at one time. |
+|  | Only one thread is executing at one time. |
+| Warp | A warp consists of 32 cores that share register memory and operate on the same instruction. |
+| Block | Each block is assigned to an SM which consists of multiple warps. |
+|  | Each SM shares 64KB of memory that can be used to share data between threads. |
+| Grid | The kernel is run on a grid of blocks. |
 ## indexing
+slides

@@ -16,27 +16,16 @@ power without direct management or intervention by the user.
 **Examples**
 
 -   Google Cloud
-
- 
-
 -   Amazon Web Services
-
- 
-
 -   Microsoft Azure
-
- 
-
 -   Openstack
 
 ### Infrastructure as a Service (IaaS)
-
 A type of service which provides users with **virtualized servers**,
 which are large computers which can run multiple OS’s and applications
 as if they were separate.
 
 **Data center**
-
 Physical location which houses servers. Can be located anywhere in the
 world as long as there is internet.
 
@@ -45,7 +34,6 @@ Are expensive to build and operate but they offer economies of scale.
 ⇒ Cost per unit of computing power decreases the more units there are.
 
 ### Containers as a Service
-
 A type of service which provides users with **containers**, which are
 **isolated environments** that can **run applications** without
 interfering with each other.
@@ -59,73 +47,39 @@ for application.
 flexibility and scalability.
 
 ### Containers in HPC
-
 See above definition
 
 **Examples**
 
 -   Docker
-
- 
-
 -   Shifter
-
- 
-
 -   Singularity
 
 ------------------------------------------------------------------------
 
 Virtual Machine
 ---------------
-
-💡
-
 Compute resource that uses software instead of a physical computer to
 run programs and deploy apps. Generally a single computer can run one or
 more virtual “guest” machines.
 
 ### General usage
-
 In the following I describe the general process for using a VM on the
 cloud
 
 1.  Open the dashboard to your cloud provider
-
- 
-
 1.  Find the specific service that allows you to create virtual
     machines, for AWS for example this would be the EC2 service
-
- 
-
 1.  Create a new virtual machine instance using this service
-
- 
-
 1.  Select the hardware you would want this virtualized system to have,
     generally this means
     1.  Operating system : Ubuntu, Debian, Fedora etc.
-
-     
-
     1.  CPU cores
-
-     
-
     1.  RAM amount
-
-     
-
     1.  Storage amount
-
- 
 
 1.  Generate an SSH key pair as a means of remotely connecting with the
     VM
-
- 
-
 1.  Connect with the VM via SSH using something akin to the following
     command
 
@@ -142,15 +96,8 @@ purposes like
 
 -   Creating multiple of the same VMs ( without having to manually setup
     new ones )
-
- 
-
 -   Creating backups of VMs in certain states
-
- 
-
 -   Many more benefits and reasons
-
 ### Organization
 
 1.  At the very top you have the Kernel Based Virtual machine called

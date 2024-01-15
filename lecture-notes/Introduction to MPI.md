@@ -5,14 +5,10 @@ Introduction to MPI
 
 Introduction and History
 ------------------------
-
-💡
-
 MPI is a library which allows process coordination and scheduling using
 a **message-passing** paradigm.
 
 ### Sequential programming model
-
 In the sequential programming model the program is executed by **only
 one process**.
 
@@ -23,7 +19,6 @@ Process is executed on a **physical CPU** of the node. ( in an HPC
 setting )
 
 ### Message passing programming model
-
 All variables are by default **private** and reside in **local memory**
 of each process.
 
@@ -35,7 +30,6 @@ Variables can be **exchanged between processes** via a call to the
 ### Message passing concepts
 
 **Message attributes**
-
 Message is sent from source process (w/ sender address) to target
 process (w/ receiver address)
 
@@ -47,7 +41,6 @@ Message contains a header with the following properties and some data :
 -   **Receiver Id** - The identification of the receiver
 
 **Environment**
-
 The messages are managed and interpreted by a runtime system which
 handles message exchange.
 
@@ -62,7 +55,6 @@ routines in MPI library.
 
 Distributed vs Shared memory
 ----------------------------
-
 A key distinction is the basic memory model which OpenMP and MPI used to
 implement parallel computations. MPI uses a **distributed memory
 paradigm,** whereas OpenMPI uses a **shared memory paradigm.**
@@ -153,7 +145,6 @@ Some examples include
 Basic synchronous communication
 -------------------------------
 This can be achieved with the `MPI_Send` and `MPI_Recv` function
-
 ### `MPI_Send`
 This routine sends a message of `count` elements starting at address
 `buf` and of type `datatype` . The message is tagged by `tag` and is
@@ -165,7 +156,6 @@ int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int ta
 ```
 
 **Input Parameters**
-
 -   **buf**: Initial address of the send buffer (choice)
 -   **count**: Number of elements in the send buffer (nonnegative
     integer)
@@ -175,7 +165,6 @@ int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int ta
 -   **comm**: Communicator (handle)
 
 ### `MPI_Recv`
-
 This routine receives message of `count` elements starting at address
 `buf` and of type `datatype`. Message bust be tagged with `tag` and is
 coming form the process of rank `source` within the communicator `comm`
@@ -193,51 +182,32 @@ int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, M
 **Output Parameters**
 
 -   **buf**: Initial address of the receive buffer (choice)
-
- 
-
 -   **status**: Status object (Status)
 
 **Input Parameters**
 
 -   **count**: Maximum number of elements in the receive buffer
     (integer)
-
- 
-
 -   **datatype**: Datatype of each receive buffer element (handle)
-
- 
-
 -   **source**: Rank of the source (integer)
-
- 
-
 -   **tag**: Message tag (integer)
-
- 
-
 -   **comm**: Communicator (handle)
 
 ### Blocking
-
 As mentioned before both of these calls work in a synchronous or
 **blocking** fashion, this has different implications to keep in mind
 
 **Blocking send**
-
 Execution remains blocked until the message can be re-written without
 the rusk of overwriting the value being sent.
 
 **Block receive**
-
 The execution remains blocked until the message is fully received in
 `buf`
 
 ### Example - Synchronous communication
 
 **installation requirements**
-
 ``` code
 // for mpicc command 
 sudo apt install openmpi-bin 
@@ -246,7 +216,6 @@ sudo apt install libopenmpi-dev
 ```
 
 **compilation**
-
 ``` code
 mpicc -o test test.c
 mpirun -np 2 ./test
@@ -255,8 +224,7 @@ mpirun -np 2 ./test
 `-np2` denotes you want to use 2 processes, namely `{0, 1}`
 
 `test.c`
-
-``` code
+``` cpp
 #include <stdio.h>
 #include <mpi.h>
 
@@ -291,35 +259,20 @@ proc 1 recv 17 from proc 0
 status source 0, tag 127, error 0
 ```
 
-$$\underset{\texttt{MPI\_COMM\_WORLD}\text{~communicator}}{\underbrace{{\texttt{proc}\ \texttt{0}}\overset{\texttt{\{MPI\_INT}\ \texttt{val=17,}\ \texttt{tag=127,}\ \texttt{source=0\}}}{\rightarrow}{\texttt{proc}\ \texttt{1}}}}$$MPI\_COMM\_WORLD communicator
-
-proc 0{MPI\_INT val=17, tag=127, source=0}
-
-​proc 1​​
-
+$$\underset{\texttt{MPI\_COMM\_WORLD}\text{~communicator}}{\underbrace{{\texttt{proc}\ \texttt{0}}\overset{\texttt{\{MPI\_INT}\ \texttt{val=17,}\ \texttt{tag=127,}\ \texttt{source=0\}}}{\rightarrow}{\texttt{proc}\ \texttt{1}}}}$$
 I think for the most part everything should be pretty self explanatory
 here
 
 1.  We start off by initializing the parallel region.
-
- 
-
-1.  For the 0th process which will only execute its code, we send the
+2.  For the 0th process which will only execute its code, we send the
     value of 17 to the process with rank 1
-
- 
-
-1.  Then in turn for the process of rank 1 it blocks and waits for
+3.  Then in turn for the process of rank 1 it blocks and waits for
     anything from the rank 0th process
-
- 
-
-1.  Once we received everything execution continues in rank 1 and we
+4.  Once we received everything execution continues in rank 1 and we
     print out the received data along with metadata about the message
     from the status struct.
 
 ### Communication Options
-
 We can decide various options for the send and receive commands that
 alter certain behaviors.
 
@@ -331,12 +284,10 @@ alter certain behaviors.
 | Variants                         | There are variants of the send and receive commands that behave similar to the standard functions but with slightly different behavior for certain purposes like `MPI_SENDRECV()` or `MPI_SENDRCV_REPLACE()` |
 
 **Note**
-
 Its possible to replace the predefined datatypes with user defined data
 types.
 
 ### Predefined datatypes
-
 Here is just a table of all the predefined datatypes you can use
 
 | MPI Datatype                  | Description                                          |
@@ -366,16 +317,12 @@ Here is just a table of all the predefined datatypes you can use
 
 Communicators
 -------------
-
-💡
-
 I was bored so I wanted to do a small exploration into what exactly
 communicators are. Abstractly we know they are just collections of
 processes with certain ranks. But what does this actually mean. Lets
 take a look with the following example.
 
 ### Example - Splitting the world communicator
-
 We start off by initializing the parallel region and required variables
 
 ``` code
@@ -458,16 +405,12 @@ split](Introduction%20to%20MPI%20be91a41bb4424987ae74d6a74ac0e8ca/Full%20code%20
 
 Deadlock
 --------
-
-💡
-
 As mentioned before a deadlock happens when two processes or threads
 want a specific resource which both are currently holding onto leading
 to a circular wait loop. Due to the fact that `MPI_Send` and `MPI_Recv`
 are blocking we can get a deadlock under certain circumstances.
 
 ### Deadlock with `MPI_Send` and `MPI_Recv`
-
 A classical mistake which can cause a deadlock with the use of these two
 functions is to first to initiate a blocking send from some Process A
 and then then have a receive from Process B, and likewise in Process B
@@ -475,7 +418,7 @@ have a send to Process A and then a receive from process A
 
 We can demonstrate this in code
 
-``` code
+``` cpp
 #include <stdio.h>
 #include <mpi.h>
 
@@ -537,15 +480,9 @@ the receiver is finished. We encounter the following scenario
 1.  Process 0 sends 42 → Process 1, it now blocks at the `MPI_Send()`
     call until Process 1’s Receive call has completed, that is, until
     all data has been transmitted
-
- 
-
-1.  Process 1 sends 13 → Process 0, it now too blocks at the
+2.  Process 1 sends 13 → Process 0, it now too blocks at the
     `MPI_Send()` call for the same reason as stated above
-
- 
-
-1.  Deadlock ⇒ We can now see that Process 0 is waiting for the Receive
+3.  Deadlock ⇒ We can now see that Process 0 is waiting for the Receive
     call to complete from Process 1, but clearly process 1 is still on
     its send call waiting for the receive call of Process 0 to complete,
     which is still on its send call … you get the picture.
@@ -554,9 +491,6 @@ the receiver is finished. We encounter the following scenario
 
 Collective Communication
 ------------------------
-
-💡
-
 So we’ve now mentioned how point to point communication works, that is,
 communication from A → B. But as you might be able to guess this alone
 isn’t very useful if we want to do large scale parallel computations. So
@@ -565,7 +499,6 @@ the process of using certain functions to **abstract complex series of
 point-to-point communications.**
 
 ### Combining Point-to-Point calls
-
 Point-to-point communication obviously still underlies the concept of
 message passing, but to make large scale communication possible there
 are methods which abstract very common complex sequences of
@@ -573,28 +506,23 @@ point-to-point communications for various purposes. Some properties of
 these abstracted communication patterns are that
 
 **Involve all processes**
-
 So collective communication generally refers to communication happening
 between all processes in the domain of a specific communicator.
 
 **Blocking nature**
-
 Collective communications are generally blocking, that is, they are only
 completed when all the inner point to point communications are finished
 
 **No need for barriers**
-
 As an implicit part of these communications there is built in
 synchronization due to their inherently blocking nature
 
 **No need to specify tags**
-
 You don’t need to specify tags along with the communications, the
 collective operation explains the type of communication that occurs and
 all involved processes are inherently a part of this.
 
 ### Collective operations
-
 Some examples of collective operations, so operations occurring on all
 processes in a communicator
 
@@ -624,16 +552,12 @@ different processes.
 
 Reduce operation
 ----------------
-
-💡
-
 An operation / method in which we take some set of distributed elements
 (e.g. certain variable values) across a set of processes in a
 communicator and then apply some operation on them to obtain a single
 value.
 
 ### `MPI_Reduce()`
-
 This routine perform a reduction over `count` elements starting at
 address `sendbuf` and of type `datatype`. The reduction is based on
 operation `op` for each process within the communicator `comm`. This
@@ -641,7 +565,7 @@ routine returns the result at address `recvbuf` only in process `root`.
 
 **Function signature**
 
-``` code
+``` cpp
 int MPI_Reduce(
                             const void *sendbuf, 
                                          void *recvbuf, 
@@ -656,40 +580,23 @@ int MPI_Reduce(
 **Input Parameters**
 
 -   `sendbuf`: Address of the send buffer (choice).
-
- 
-
 -   `count`: Number of elements in the send buffer (integer).
-
- 
-
 -   `datatype`: Data type of elements of the send buffer (handle).
-
- 
-
 -   `op`: Reduce operation (handle).
-
- 
-
 -   `root`: Rank of the root process (integer).
-
- 
-
 -   `comm`: Communicator (handle).
 
 **Output Parameters**
-
 -   `recvbuf`: Address of the receive buffer (choice, significant only
     at the root).
 
 **Intuition example**
-
 Not to hard to understand, if we use `+` as an example operation and a
 set of values `{1, 2, 3}`, each one belonging to 1 of 3 processes and we
 say that we want the result to be collected on Process `0`. Then we just
 apply the operation, namely
 
-$$1 + 2 + 3 = 6$$1+2+3=6
+$$1 + 2 + 3 = 6$$
 
 And then we take the result `6` and write it to some variable in the
 memory of process 0.
@@ -697,8 +604,7 @@ memory of process 0.
 **Code example**
 
 `test.c`
-
-``` code
+``` cpp
 #include <stdio.h>
 #include <mpi.h>
 
