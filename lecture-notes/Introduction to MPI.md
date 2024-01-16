@@ -1,7 +1,4 @@
-Introduction to MPI
-===================
 
-------------------------------------------------------------------------
 
 Introduction and History
 ------------------------
@@ -9,29 +6,23 @@ MPI is a library which allows process coordination and scheduling using
 a **message-passing** paradigm.
 
 ### Sequential programming model
-In the sequential programming model the program is executed by **only
-one process**.
+In the sequential programming model the program is executed by **only one process**.
 
-All variables and constants of program are **allocated in process
-memory**.
+All variables and constants of program are **allocated in process memory**.
 
-Process is executed on a **physical CPU** of the node. ( in an HPC
-setting )
+Process is executed on a **physical CPU** of the node. ( in an HPC setting )
 
 ### Message passing programming model
-All variables are by default **private** and reside in **local memory**
-of each process.
+All variables are by default **private** and reside in **local memory** of each process.
 
 Each process can execute a different **part of the program.**
 
-Variables can be **exchanged between processes** via a call to the
-**message passing subroutine**.
+Variables can be **exchanged between processes** via a call to the **message passing subroutine**.
 
 ### Message passing concepts
 
 **Message attributes**
-Message is sent from source process (w/ sender address) to target
-process (w/ receiver address)
+Message is sent from source process (w/ sender address) to target process (w/ receiver address)
 
 Message contains a header with the following properties and some data :
 
@@ -41,49 +32,36 @@ Message contains a header with the following properties and some data :
 -   **Receiver Id** - The identification of the receiver
 
 **Environment**
-The messages are managed and interpreted by a runtime system which
-handles message exchange.
+The messages are managed and interpreted by a runtime system which handles message exchange.
 
-Messages are sent to specific addresses. Receiving processes must be
-able to classify and interpret incoming message.
+Messages are sent to specific addresses. Receiving processes must be able to classify and interpret incoming message.
 
-And MPI application is a group of autonomous processes on different
-nodes (computers) communicating to the other processes via calls to
-routines in MPI library.
+And MPI application is a group of autonomous processes on different nodes (computers) communicating to the other processes via calls to routines in MPI library.
 
 ------------------------------------------------------------------------
 
 Distributed vs Shared memory
 ----------------------------
-A key distinction is the basic memory model which OpenMP and MPI used to
-implement parallel computations. MPI uses a **distributed memory
-paradigm,** whereas OpenMPI uses a **shared memory paradigm.**
+A key distinction is the basic memory model which OpenMP and MPI used to implement parallel computations. MPI uses a **distributed memory paradigm,** whereas OpenMPI uses a **shared memory paradigm.**
 ### Shared memory
-Data are shared implicitly ( by default ) within the node through RAM.
-This is the main method that underlies OpenMP’s implementation of
-parallelism.
+Data are shared implicitly ( by default ) within the node through RAM. This is the main method that underlies OpenMP’s implementation of parallelism.
+
 ### Distributed memory
-Data are transferred explicitly ( by the developer ) between nodes
-through the network.
+Data are transferred explicitly ( by the developer ) between nodes through the network.
 
 Usually via some interconnect network between the nodes.
 
-This is the main method that underlies MPIs implementation of
-parallelism.
+This is the main method that underlies MPIs implementation of parallelism.
 
 ![](Introduction%20to%20MPI%20be91a41bb4424987ae74d6a74ac0e8ca/Untitled.png)
 
 ### Data distribution
-In MPI data are **distributed between nodes** using a **domain
-decomposition strategy**. This being a technique for solving problems by
-dividing the spatial domain of the problem into smaller subdomains.
+In MPI data are **distributed between nodes** using a **domain decomposition strategy**. This being a technique for solving problems by dividing the spatial domain of the problem into smaller subdomains.
 
 ------------------------------------------------------------------------
 MPI Environment
 ---------------
-The MPI environment generally consists of a few core features that make
-up an MPI application, this includes things like **environment
-variables, launching the MPI environment, terminating it** and then any
+The MPI environment generally consists of a few core features that make up an MPI application, this includes things like **environment variables, launching the MPI environment, terminating it** and then any
 **MPI routine calls** happening during the parallel section of the code.
 
 To get the version for this information we used in the introduction see
@@ -93,49 +71,33 @@ To get the version for this information we used in the introduction see
 Communicators
 -------------
 
-All inter-process communications occur via communicator objects, which
-define processes that can talk.
+All inter-process communications occur via communicator objects, which define processes that can talk.
 ### Point-to-point communications
-Point-to-point communication involves the **exchange of data** between
-two processes in a **parallel or distributed computing environment**.
+Point-to-point communication involves the **exchange of data** between two processes in a **parallel or distributed computing environment**.
 
 **Identification**
-One process is the receiver identified by their rank and another is the
-sender likewise identified by their rank. The collection of all
-processes that can talk to each other is called the **communicator**.
+One process is the receiver identified by their rank and another is the sender likewise identified by their rank. The collection of all processes that can talk to each other is called the **communicator**.
 
 ### Message header
-As indicated in the introduction messages sent between processes are
-typically also accompanied by a header. To elaborate on the exact
-contents of this header
+As indicated in the introduction messages sent between processes are typically also accompanied by a header. To elaborate on the exact contents of this header
 
-**Sender rank** which identifies the sender, so the processes that
-initiated the communication
+**Sender rank** which identifies the sender, so the processes that initiated the communication
 
 **Receiver rank** which identifies, unsurprisingly, the receiver (wowie)
 
-**Message tag** which is some piece of user-defined label/tag that helps
-the processing of the message on the receivers end, in other words it
-tells it how to handle the message
+**Message tag** which is some piece of user-defined label/tag that helps the processing of the message on the receivers end, in other words it tells it how to handle the message
 
-**Communicator identifier** which specifies the communicator to which
-the sender and receiver belong, which ensures that the communications
-occur within the designated group
+**Communicator identifier** which specifies the communicator to which the sender and receiver belong, which ensures that the communications occur within the designated group
 
-**Type of exchange data** which indicates well, the type of data being
-exchanged, which can be primitives (e.g. int, float) or more complex
-data structures
+**Type of exchange data** which indicates well, the type of data being exchanged, which can be primitives (e.g. int, float) or more complex data structures
 
 ### Transfer modes
-For each communication you can select a transfer mode corresponding to a
-specific **protocol.**
+For each communication you can select a transfer mode corresponding to a specific **protocol.**
 
 **Protocols**
-These decide how the data is transferred between processes and can vary
-in things like performance, reliability and other characteristics.
+These decide how the data is transferred between processes and can vary in things like performance, reliability and other characteristics.
 
 Some examples include
-
 -   Synchronous - So blocking communication
 -   Asynchronous - Non blocking communication
 -   Buffered
@@ -146,9 +108,7 @@ Basic synchronous communication
 -------------------------------
 This can be achieved with the `MPI_Send` and `MPI_Recv` function
 ### `MPI_Send`
-This routine sends a message of `count` elements starting at address
-`buf` and of type `datatype` . The message is tagged by `tag` and is
-sent to the process of rank `dest` within the communicator `comm`.
+This routine sends a message of `count` elements starting at address `buf` and of type `datatype` . The message is tagged by `tag` and is sent to the process of rank `dest` within the communicator `comm`.
 
 **Synopsis**
 ``` code
@@ -165,22 +125,16 @@ int MPI_Send(const void *buf, int count, MPI_Datatype datatype, int dest, int ta
 -   **comm**: Communicator (handle)
 
 ### `MPI_Recv`
-This routine receives message of `count` elements starting at address
-`buf` and of type `datatype`. Message bust be tagged with `tag` and is
-coming form the process of rank `source` within the communicator `comm`
+This routine receives message of `count` elements starting at address `buf` and of type `datatype`. Message bust be tagged with `tag` and is coming form the process of rank `source` within the communicator `comm`
 
-`status` receives information about the communication (i.e. source, tag,
-error codes). `MPI_Recv` only works with a corresponding `MPI_Send` if
-they have the same header (same `source`, `dest`, `tag`, `comm`)
+`status` receives information about the communication (i.e. source, tag, error codes). `MPI_Recv` only works with a corresponding `MPI_Send` if they have the same header (same `source`, `dest`, `tag`, `comm`)
 
 **Synopsis**
-
 ``` code
 int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status)
 ```
 
 **Output Parameters**
-
 -   **buf**: Initial address of the receive buffer (choice)
 -   **status**: Status object (Status)
 

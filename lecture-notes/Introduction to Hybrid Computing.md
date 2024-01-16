@@ -310,67 +310,34 @@ the equivalent optimized pattern which means in the end we have
 basically the same runtime.
 
 ### Data alignment
-
-How data is aligned is of particular relevance with SIMD instructions
-because if its not aligned to the size of an SIMD register it can cause
-certain issues with vector instructions. There are generally 3 different
-situations of alignment with memory.
+How data is aligned is of particular relevance with SIMD instructions because if its not aligned to the size of an SIMD register it can cause certain issues with vector instructions. There are generally 3 different situations of alignment with memory.
 
 **No alignment**
-
-Here memory is not aligned, that is, its not stored as some multiple of
-a specific size, this is generally slower specifically with SIMD
-instructions.
-
+Here memory is not aligned, that is, its not stored as some multiple of a specific size, this is generally slower specifically with SIMD instructions.
 ![](Untitled%2014.png)
 
 **Full alignment**
-
-Here the memory is perfectly aligned which is the optimal state for
-performance.
-
+Here the memory is perfectly aligned which is the optimal state for performance.
 ![](Untitled%2015.png)
 
 **Partial alignment**
-
-One approach for getting at least some performance out of memory which
-is not aligned is to **peel** the first few values of the array. Which
-means we processes them using regular instructions and the rest of the
-memory which is aligned can then still be processed concurrently with
-the SIMD instruction.
-
+One approach for getting at least some performance out of memory which is not aligned is to **peel** the first few values of the array. Which means we processes them using regular instructions and the rest of the memory which is aligned can then still be processed concurrently with the SIMD instruction.
 ![](Untitled%2016.png)
 
 ### Divergence
-Divergence is another factor which is important in the runtime of HPC
-code. In the context of HPC divergence refers to the situation where
-different parallel threads or processes execute different branches of a
-conditional statement which can lead to performance degradation,
-synchronization problems or just a wrong result in the computation.
+Divergence is another factor which is important in the runtime of HPC code. In the context of HPC divergence refers to the situation where different parallel threads or processes execute different branches of a conditional statement which can lead to performance degradation, synchronization problems or just a wrong result in the computation.
 
 **Mitigating divergence**
-So when writing high performance parallel code you generally want to
-mitigate divergence. So its generally good to try and be aware of
-potential places where diverge could occur and of mitigation methods
-like using divergence optimizing compilers, and other means.
+So when writing high performance parallel code you generally want to mitigate divergence. So its generally good to try and be aware of potential places where diverge could occur and of mitigation methods like using divergence optimizing compilers, and other means.
 
 ------------------------------------------------------------------------
 
 Graphics Processing Unit (GPU)
 ------------------------------
-The GPU is of particular relevance in HPC because as opposed to the CPU
-its **optimized for parallel tasks.** It has a lower main memory and
-per-thread performance than a CPU though it compensates for this by
-having a **higher thread-count.** It also has **more compute resources**
-than a CPU.
+The GPU is of particular relevance in HPC because as opposed to the CPU its **optimized for parallel tasks.** It has a lower main memory and per-thread performance than a CPU though it compensates for this by having a **higher thread-count.** It also has **more compute resources** than a CPU.
 
 ### Bottleneck
-One point of particular relevance with GPU computations it the potential
-bottlenecks between transfer points such as the CPU ↔ GPU or GPU ↔
-Memory. If there isn’t a balance maintained with the memory transfer
-speeds and the computation speeds then one or the other point will lead
-to a bottleneck. As an example we can compare the P100 and the A100 GPUs
-from NVIDEA
+One point of particular relevance with GPU computations it the potential bottlenecks between transfer points such as the CPU ↔ GPU or GPU ↔ Memory. If there isn’t a balance maintained with the memory transfer speeds and the computation speeds then one or the other point will lead to a bottleneck. As an example we can compare the P100 and the A100 GPUs from NVIDEA
 
 ### CPU ↔ GPU \| **Comparison P100 vs A100**
 |                               |             |              |
@@ -381,10 +348,7 @@ from NVIDEA
 | float op. / transferred float | 1100        | 1200         |
 | flop / byte                   | \~300       | \~300        |
 
-They key observation to make here is that we maintained the flop to byte
-ratio, which means that the transfer speed increased at the same rate of
-the speed of floating point operations, meaning in respect to the P100
-the A100 does not introduce any bottlenecks.
+They key observation to make here is that we maintained the flop to byte ratio, which means that the transfer speed increased at the same rate of the speed of floating point operations, meaning in respect to the P100 the A100 does not introduce any bottlenecks.
 
 ### Memory↔ GPU \| **Comparison P100 vs A100**
 |                               |             |              |

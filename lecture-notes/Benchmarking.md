@@ -1,7 +1,6 @@
 
 Compiler suites
 ---------------
-
 Compiler suites are a **collection of tools**, most prominently for
 compiling your program, but also things more general development and
 testing, including benchmarking.

@@ -1,9 +1,6 @@
 
 Anything as a Service (XaaS)
 ----------------------------
-
-💡
-
 “Anything as a Service” describes the general category of services
 related to cloud computing and remote access. Including things like
 Infrastructure as a service or Containers as a service

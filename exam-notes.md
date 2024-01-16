@@ -218,6 +218,10 @@ Latency and throughput are two metrics that measure the performance of a compute
 - [[hpc lecture 6 - OpenMP.pdf]]
 ---
 # MPI
+- [[Introduction to MPI]]
+- [[hpc lecture 3 - MPI and OpenMP.pdf]]
+- [[hpc lecture 7 - MPI.pdf]]
+
 ## model
 
 ## load balancing / domain decomposition 
@@ -227,7 +231,6 @@ Latency and throughput are two metrics that measure the performance of a compute
 ## common functions 
 
 ## message passing and common problems
-
 
 ---
 # Cloud & Containers 
@@ -252,7 +255,24 @@ As a result, virtual machines are typically more resource-intensive than contain
 ## ephemeral computing 
 Ephemeral computing is the practice of creating a virtual computing environment as a need arises and then destroying that environment when the need is met, and the resources are no longer in demand. You pay only for what’s used when it’s used. The value proposition of ephemeral computing is hard to ignore.
 ## root in vms 
-lmao
+n the context of virtualization and operating systems, being "root" refers to having administrative or superuser privileges on a Unix-like system. The equivalent term on Windows systems is "Administrator." When you are the root user in a virtual machine (VM), it means you have the highest level of access and control over that virtualized instance.
+
+Here's what comes with being the root user in a VM:
+
+1.  **Full System Control:** As the root user, you have unrestricted access to all files, directories, and system resources on the virtual machine. This includes system-critical files and settings.
+    
+2.  **Installation and Removal of Software:** Root privileges allow you to install, update, and remove software packages, including system-level components. This level of access is necessary for system maintenance and customization.
+    
+3.  **User Management:** The root user can create, modify, and delete user accounts on the system. This includes assigning privileges and managing user permissions.
+    
+4.  **System Configuration:** Root can modify system configuration files, enabling customization of various aspects of the operating system. This includes network settings, security configurations, and other system parameters.
+    
+5.  **Kernel-level Operations:** The root user can perform tasks that involve interaction with the kernel, such as loading or unloading kernel modules, configuring kernel parameters, and more.
+    
+6.  **System Updates:** Root privileges are required to apply system updates and patches, ensuring the VM is up-to-date with the latest security fixes and improvements.
+    
+7.  **Access to Special Devices:** Certain devices and resources may only be accessed by the root user, such as certain hardware peripherals or critical system files.
+
 ## dockerhub 
 ### Docker registries
 A Docker registry stores Docker images. Docker Hub is a public registry that anyone can use, and Docker looks for images on Docker Hub by default. You can even run your own private registry.
@@ -304,13 +324,16 @@ Volumes are the preferred method for persisting Docker container data. Unlike bi
 
 ---
 # MapReduce 
-
+- [[MapReduce]]
+- [[hpc lecture 10 - MapReduce.pdf]]
 ## compute sent to data 
 
 ## data model 
 
 ## map and reduce phase
+**Map**, which describes the computation or analysis applied to a set of input key/value pairs to produce a set of intermediate key/value pairs; and
 
+**Reduce**, in which the set of values associated with the intermediate key/value pairs output by the _Map_ operation are combined to provide the results.
 ## key and value
 
 ---
@@ -325,8 +348,8 @@ Instead of being executed only once, a kernel is executed N times in parallel by
 
 Each thread works on a different index (threadID) in an array of inputs to produce an array of outputs
 
-
 Accordingly, kernel calls must supply special arguments specifying how many threads to use on the GPU. They do this using CUDA's "execution configuration" syntax, which looks like this: fun<<<1, N>>>(x, y, z). Note that the first entry in the configuration (1, in this case) gives the number of blocks of N threads that will be launched.
+
 ### Streaming multiprocessors (in hardware)
 On the GPU, a kernel call is executed by one or more streaming multiprocessors, or SMs. The SMs are the hardware homes of the CUDA cores that execute the threads. The CUDA cores in each SM are always arranged in sets of 32 so that the SM can use them to execute full warps of threads. The exact number of SMs available in a device depends on its NVIDIA processor family (Volta, Turing, etc.), as well as the specific model number of the processor. Thus, the Volta chip in the Tesla V100 has 80 SMs in total, while the more recent Turing chip in the Quadro RTX 5000 has just 48.
 
@@ -335,12 +358,14 @@ However, the number of SMs that the GPU will actually use to execute a kernel ca
 Each SM then divides the N threads in its current block into warps of 32 threads for parallel execution internally. On every cycle, each SM's schedulers are responsible for assigning full warps of threads to run on available sets of 32 CUDA cores. (The Volta architecture has 4 such schedulers per SM.) Any leftover, partial warps in a thread block will still be assigned to run on a set of 32 CUDA cores.
 
 The SM includes several levels of memory that can be accessed only by the CUDA cores of that SM: registers, L1 cache, constant caches, and shared memory. The exact properties of the per-SM and global memory available in Volta GPUs will be outlined shortly.
+
 ## SIMD 
 Single instruction, multiple data (SIMD), is a class of parallel computers in Flynn's taxonomy. It describes computers with multiple processing elements that perform the same operation on multiple data points simultaneously. Thus, such machines exploit data level parallelism, but not concurrency: there are simultaneous (parallel) computations, but only a single process (instruction) at a given moment. SIMD is particularly applicable to common tasks like adjusting the contrast in a digital image or adjusting the volume of digital audio. Most modern CPU designs include SIMD instructions in order to improve the performance of multimedia use.
 
 In short, SIMD allows for processing several data values with one single instruction. It's a cheap way to increase the computational power of CPUs: What is mostly needed are wide ALUs (those are cheap) and comparatively little control logic.
 
 To unlock the computation potential of modern CPUs it is essential to utilize SIMD instructions.
+
 ### packed data
 SIMD engines usually work with wide registers (a typical number is 128 bits) that can contain several independent values. A typical 128 bit SIMD register can contain...
 
@@ -350,14 +375,17 @@ four 32 bit integer values (int32x4 and uint32x4)
 four single precision floating point values (float32x4)
 two double precision floating point values (float64x2)
 SIMD registers essentially contain vectors. SIMD instructions thus essentially are vector instructions. Awesome!
+
 ### operations on packed data
 To actually get something done with SIMD operations are needed that work on SIMD data types.
 
 A list of typical operations is assembled on the SIMD Operations page.
+
 ### SIMD instruction sets
 SSE2: Available on every not completely outdated CPU from Intel, AMD, or VIA. The SSE2 instructions are guaranteed to be available on all 64-bit x86-CPUs („x86-64“).
 AVX: Available on modern high-performance CPUs from Intel and AMD.
 NEON: Available on basically every modern ARM-compatible CPU designed for general purpose applications (for instance, the vast majority of ARM CPUs in smartphones or tablets support NEON).
+
 ## CPU vs GPU 
 
 ## divergence 
@@ -372,6 +400,7 @@ slides
 ---
 # OpenACC
 - [[Introduction to OpenACC]]
+- [[introduction to openac]]
 ## Directive Based 
 As mentioned before the fundamental way most programmers are going to
 use OpenACC is through directives, the same principle as with OpenMP,
@@ -437,8 +466,10 @@ expensive processes whos trade-off should be well considered.
     - Memory hierarchy optimization is possible for advanced CUDA developers.
 ## compiling 
 slides
+
 ## streaming multiprocessor 
 see previous
+
 ## grid/block/warp/thread 
 | Term | Description |
 | ---- | ---- |
@@ -448,5 +479,6 @@ see previous
 | Block | Each block is assigned to an SM which consists of multiple warps. |
 |  | Each SM shares 64KB of memory that can be used to share data between threads. |
 | Grid | The kernel is run on a grid of blocks. |
+
 ## indexing
 slides
