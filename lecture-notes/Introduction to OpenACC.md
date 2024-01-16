@@ -1027,5 +1027,5 @@ interchangeably with stream.
     -   There are a fixed number of SMs
     -   You can have only one copy (possibly each direction) active at a
         time.
-
+	
 ![](Introduction%20to%20OpenACC%200686e789539744f78902f0ee33207073/Untitled%203.png)
