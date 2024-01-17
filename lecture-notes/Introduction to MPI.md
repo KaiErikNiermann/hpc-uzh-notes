@@ -148,16 +148,13 @@ int MPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, M
 -   **comm**: Communicator (handle)
 
 ### Blocking
-As mentioned before both of these calls work in a synchronous or
-**blocking** fashion, this has different implications to keep in mind
+As mentioned before both of these calls work in a synchronous or **blocking** fashion, this has different implications to keep in mind
 
 **Blocking send**
-Execution remains blocked until the message can be re-written without
-the rusk of overwriting the value being sent.
+Execution remains blocked until the message can be re-written without the rusk of overwriting the value being sent.
 
 **Block receive**
-The execution remains blocked until the message is fully received in
-`buf`
+The execution remains blocked until the message is fully received in `buf`
 
 ### Example - Synchronous communication
 
@@ -227,8 +224,7 @@ here
     from the status struct.
 
 ### Communication Options
-We can decide various options for the send and receive commands that
-alter certain behaviors.
+We can decide various options for the send and receive commands that alter certain behaviors.
 
 |                                  |                                                                                                                                                                                                              |
 |----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -271,10 +267,7 @@ Here is just a table of all the predefined datatypes you can use
 
 Communicators
 -------------
-I was bored so I wanted to do a small exploration into what exactly
-communicators are. Abstractly we know they are just collections of
-processes with certain ranks. But what does this actually mean. Lets
-take a look with the following example.
+I was bored so I wanted to do a small exploration into what exactly communicators are. Abstractly we know they are just collections of processes with certain ranks. But what does this actually mean. Lets take a look with the following example.
 
 ### Example - Splitting the world communicator
 We start off by initializing the parallel region and required variables
@@ -292,12 +285,9 @@ MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 MPI_Comm_size(MPI_COMM_WORLD, &size);
 ```
 
-Because the rank changes once you place a certain process into the
-region of a new communicator lets save the rank of the process from when
-it was in the world communicator.
+Because the rank changes once you place a certain process into the region of a new communicator lets save the rank of the process from when it was in the world communicator.
 
-After this lets put all processes with an even rank into the `even_comm`
-and odd in `odd_comm`
+After this lets put all processes with an even rank into the `even_comm` and odd in `odd_comm`
 
 ``` code
 int var = rank;
